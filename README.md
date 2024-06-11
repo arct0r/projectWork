@@ -1,1 +1,1 @@
-who reads this is stupid
+link to the page: toxicity.streamlit.app
