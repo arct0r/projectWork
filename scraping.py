@@ -25,3 +25,22 @@ def getDF(link):
     df = pd.DataFrame()
 
     return test
+
+def getDF_soup():
+    with open("sample_page.html") as page:
+        page_soup = bs(page, 'html.parser')
+    
+    #reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a')]
+    #dates = [k.text for k in page_soup.findAll('table')[1]]
+    test = [k.findAll('td').text for k in page_soup.findAll('tr')]
+    print(test)
+    #test = [k for k in test.findAll('td')]
+    #print(test)
+    #print(reports)
+    #print(dates)
+
+    #df = pd.DataFrame()
+
+    return None
+getDF_soup()
+
