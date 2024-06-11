@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+from bs4 import BeautifulSoup as bs
+import requests as rq
 
 st.title('Substance Searcher (sample name)')
 
@@ -12,4 +14,10 @@ csv = csv.drop_duplicates(subset=['Link'])
 substance = st.selectbox(label = "Inserisci il nome della sostanza che vuoi cercare:", options=csv['Ingredienti'])
 #st.write("Attempting to search: ", substance)
 
-csv.loc[csv['Ingredienti'] == substance]
+result = csv.loc[csv['Ingredienti'] == substance]
+link = result.iloc[0]['Link']
+link
+page_ref = rq.get(link)
+
+page_soup = bs(page_ref.text, 'html.parser')
+print(page_soup.prettify())
