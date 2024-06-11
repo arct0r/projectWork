@@ -1,1 +1,1 @@
-link to the page: www.toxicity.streamlit.app
+link to the page: toxicity.streamlit.app
