@@ -15,28 +15,50 @@ def getDF(link):
 
     page_soup = bs(page_ref.text, 'html.parser')
     
-    #reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a')]
-    #dates = [k.text for k in page_soup.findAll('table')[1]]
-    test = [k for k in page_soup.findAll('tr')]
+    reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a')]
+    test = [i.contents for i in page_soup.findAll('td')]
+    test = test[3:]
     print(test)
-    #print(reports)
-    #print(dates)
-
+    new_test = []
     df = pd.DataFrame()
 
-    return test
+
+    for i in range(0,len(test),3):
+        df = pd.concat([df, pd.DataFrame({1: test[i], 2: test[i+1], 3: test[i+2]})], ignore_index=True)
+
+
+    df = df.assign(Link=reports)
+    df = df.rename(columns={1: "Name", 2: "Status", 3: "Date/Reference", 4: "Link"})
+    df = df.drop(['Name','Status'], axis=1) #temp drop
+    return df
 
 def getDF_soup():
     with open("sample_page.html") as page:
         page_soup = bs(page, 'html.parser')
     
-    #reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a')]
-    #dates = [k.text for k in page_soup.findAll('table')[1]]
-    test = [k.findAll('td').text for k in page_soup.findAll('tr')]
+    reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a')]
+    test = [i.contents for i in page_soup.findAll('td')]
+    test = test[3:]
     print(test)
+    new_test = []
+    df = pd.DataFrame()
+
+
+    for i in range(0,len(test),3):
+        df = pd.concat([df, pd.DataFrame({1: test[i], 2: test[i+1], 3: test[i+2]})], ignore_index=True)
+
+
+    df = df.assign(Link=reports)
+    df = df.rename(columns={1: "Name", 2: "Status", 3: "Date/Reference", 4: "Link"})
+    print(df)
+
+    #test = [k.findAll('td').text for k in page_soup.findAll('tr')]
+    #print(test)
+
     #test = [k for k in test.findAll('td')]
     #print(test)
-    #print(reports)
+
+    #print(reports) this works. It gets the links.
     #print(dates)
 
     #df = pd.DataFrame()
