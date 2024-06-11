@@ -20,9 +20,11 @@ if substance:
     link
     page_ref = rq.get(link)
     page_soup = bs(page_ref.text, 'html.parser')
+    table = getDF(link)
+    table     
 else:
     csv
 
-getDF(link)     
+
 
 
