@@ -14,10 +14,14 @@ def getDF(link):
     page_ref = rq.get(link)
 
     page_soup = bs(page_ref.text, 'html.parser')
-    a = [i for i in page_soup.findAll('table')[0].findAll('a')]
-    ab = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a')]
+    
+    #reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a')]
+    #dates = [k.text for k in page_soup.findAll('table')[1]]
+    test = [k for k in page_soup.findAll('tr')]
+    print(test)
+    #print(reports)
+    #print(dates)
 
-    df = pd.DataFrame({'link': ab, 'col2': None})
+    df = pd.DataFrame()
 
-
-    return df
+    return test
