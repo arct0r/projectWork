@@ -20,4 +20,9 @@ link
 page_ref = rq.get(link)
 
 page_soup = bs(page_ref.text, 'html.parser')
-print(page_soup.prettify())
+# print(page_soup.prettify())
+
+#page_soup.findAll('table')[0].findAll('tr')
+['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a')]
+
+
