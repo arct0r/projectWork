@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup as bs
 import requests as rq
 from scraping import getDF
 
-st.title('Substance Searcher (sample name)')
+st.title('⌬ Substance Searcher  ')
 
 with open("cir-reports.csv") as tab:
     csv = pd.read_csv(tab, names=['Ingredienti', 'INCI Nome', 'Link'])
