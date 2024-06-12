@@ -10,7 +10,7 @@ st.title('⌬ Substance Searcher 🧪')
 source = st.radio(
     "Seleziona la fonte di dati",
     [":rainbow[ECHA]", ":blue[CIR]"],
-    captions = ["Più veloce, attraverso l'API di Iuclid", "Scraping manuale, lento"], horizontal=True)
+    captions = ["Più veloce, attraverso l'API di Iuclid", "Scraping manuale, lento"], horizontal=True, index=1)
 
 if source == ":rainbow[ECHA]":
     "Hey, you shouldn't click that yet."
