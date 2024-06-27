@@ -78,14 +78,17 @@ getDF_soup()
 
 def get_pdf_pages(df):
     ref_pages = []
-    for l in df['Link']:
-        dossier = rq.get(l)
-        pdf_file = pdfr(dossier)
-        # number_of_pages = len(pdf_file.pages)
-        extracted_pages = [p.extract_text() for p in pdf_file.pages]
-        for page in extracted_pages:
-            if "LD50" in page or "NOAEL" in page:
-                ref_pages.append(page)
+    for link in df['Link']:
+        dossier = rq.get(link)
+        with open('dossier.pdf', 'wb') as file:
+            file.write(dossier.content)
+        with open('pdf.pdf', 'rb') as file_read:
+            pdf_file = pdfr(file_read)
+            # number_of_pages = len(pdf_file.pages)
+            extracted_pages = [p.extract_text() for p in pdf_file.pages]
+            for page in extracted_pages:
+                if "LD50" in page or "NOAEL" in page:
+                    ref_pages.append(page)
         #print(len(ref_pages))
         #print(ref_pages)
 
