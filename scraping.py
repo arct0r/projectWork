@@ -1,6 +1,7 @@
 # Qui dal sito creiamo una tabella pandas
 import pandas as pd 
 import requests as rq
+from PyPDF2 import PdfReader as pdfr
 from bs4 import BeautifulSoup as bs
 
 # with open('quacker.html', errors='ignore') as page:
@@ -74,4 +75,28 @@ def getDF_soup():
     return None
 
 getDF_soup()
+
+def get_pdf_pages(links_col):
+    ref_pages = []
+    for l in links_col:
+        dossier = rq.get(l)
+        pdf_file = pdfr(dossier)
+        # number_of_pages = len(pdf_file.pages)
+        extracted_pages = [p.extract_text() for p in pdf_file.pages]
+        for page in extracted_pages:
+            if "LD50" in page or "NOAEL" in page:
+                ref_pages.append(page)
+        #print(len(ref_pages))
+        #print(ref_pages)
+
+    return ref_pages
+
+def create_text(pages):
+    text_file = open("Prova.txt", "w")
+    for testo in pages:
+        text_file.write(testo)
+    
+    return text_file
+
+
 
