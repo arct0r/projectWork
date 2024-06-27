@@ -43,12 +43,9 @@ elif source ==':blue[CIR]':
         file = rq.get(git_link)
         confirm = st.button(label='Ask gemini')
         prompt = f"{qq} : \n {file}"
-        prompt
-        '''
         if confirm:
             response = model.generate_content(prompt)
             response.text
-        '''
         
     else:
         csv
