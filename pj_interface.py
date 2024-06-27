@@ -43,9 +43,13 @@ elif source ==':blue[CIR]':
         git_link = 'https://github.com/arct0r/projectWork/raw/main/Prova.txt'
         file = rq.get(git_link)
         confirm = st.button(label='Ask gemini')
+        prompt = f"{qq} : \n {dossier_text}"
+        prompt
+        '''
         if confirm:
-            response = model.generate_content(f"{qq} : \n {dossier_text}")
+            response = model.generate_content(prompt)
             response.text
+        '''
         
     else:
         csv
