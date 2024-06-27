@@ -48,7 +48,7 @@ elif source ==':blue[CIR]':
         testo
         confirm = st.button(label='Ask gemini')
         if confirm:
-            response = model.generate_content(qq, testo)
+            response = model.generate_content(qq + testo)
             response.text
 
 
