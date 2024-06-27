@@ -43,7 +43,7 @@ elif source ==':blue[CIR]':
         git_link = 'https://github.com/arct0r/projectWork/raw/main/Prova.txt'
         file = rq.get(git_link)
         confirm = st.button(label='Ask gemini')
-        prompt = f"{qq} : \n {dossier_text}"
+        prompt = f"{qq} : \n {dossier_text.read()}"
         prompt
         '''
         if confirm:
