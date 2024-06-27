@@ -41,6 +41,7 @@ elif source ==':blue[CIR]':
         text_file = open('Prova.txt', 'r')
         qq = 'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti, poi creami una tabella che posso trasformare in un dataframe di pandas per Python\n'
         #print(qq+text_file.read())
+        type(text_file)
         testo = text_file.read()
         testo
         confirm = st.button(label='Ask gemini')
