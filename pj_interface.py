@@ -33,7 +33,6 @@ elif source ==':blue[CIR]':
         page_ref = rq.get(link)
         page_soup = bs(page_ref.text, 'html.parser')
         table = getDF(link)
-        '''
         #table
         pagine = get_pdf_pages(table)
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
@@ -43,11 +42,10 @@ elif source ==':blue[CIR]':
         git_link = 'https://github.com/arct0r/projectWork/raw/main/Prova.txt'
         file = rq.get(git_link)
         confirm = st.button(label='Ask gemini')
-        prompt = f"{qq} : \n {file}"
+        prompt = f"{qq} : \n {file.text}"
         if confirm:
             response = model.generate_content(prompt)
             response.text
-        '''
         
     else:
         csv
@@ -59,7 +57,7 @@ elif source ==':blue[CIR]':
         file = rq.get(git_link)
         confirm = st.button(label='Ask gemini')
         if confirm:
-            response = model.generate_content(f"{qq} : \n {file}")
+            response = model.generate_content(f"{qq} : \n {file.text}")
             response.text
 
 
