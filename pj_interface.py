@@ -38,17 +38,17 @@ elif source ==':blue[CIR]':
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         # domanda = st.text_area(label='Type your input here')
-        text_file = open('Prova.txt', 'w+')
         qq = 'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti, poi creami una tabella coi valori trovati\n'
         #print(qq+text_file.read())
-        'test'
         #f"{type(text_file)}"
         #f"{text_file.read()}"
-        testo = text_file.read()
-        #testo
+        with open('Prova.txt', 'r') as testo:
+            text = testo.read()
+        #st.write(text)
+        #'aaaa'   
         confirm = st.button(label='Ask gemini')
         if confirm:
-            response = model.generate_content(f"{qq} : \n {testo}")
+            response = model.generate_content(f"{qq} : \n {text}")
             response.text
 
 
