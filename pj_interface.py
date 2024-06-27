@@ -3,6 +3,8 @@ import pandas as pd
 from bs4 import BeautifulSoup as bs
 import requests as rq
 from scraping import getDF
+import google.generativeai as genai
+
 
 st.title('⌬ Substance Searcher 🧪')
 
@@ -27,12 +29,16 @@ elif source ==':blue[CIR]':
         result = csv.loc[csv['Ingredienti'] == substance]
         link = result.iloc[0]['Link']   
         link
-        page_ref = rq.get(link)
+        page_ref = rq.get(link)s
         page_soup = bs(page_ref.text, 'html.parser')
         table = getDF(link)
         table     
     else:
         csv
+        genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
+        model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+        response = model.generate_content(f"Test. Come va?")
+        print(response.text)
 
 
 
