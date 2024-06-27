@@ -39,7 +39,7 @@ elif source ==':blue[CIR]':
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         # domanda = st.text_area(label='Type your input here')
         file = open('Prova.txt', 'r')
-        testo = file.read()
+        testo = file.read().replace('\n', '')
         qq = f'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti, poi creami una tabella che posso trasformare in un dataframe di pandas per Python\n{testo}'
         confirm = st.button(label='Ask gemini')
         if confirm:
