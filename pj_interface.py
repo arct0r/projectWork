@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from bs4 import BeautifulSoup as bs
 import requests as rq
-from scraping import getDF, get_pdf_pages, create_text
+from scraping import getDF, get_pdf_pages
 import google.generativeai as genai
 
 
