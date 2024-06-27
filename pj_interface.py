@@ -43,7 +43,7 @@ elif source ==':blue[CIR]':
         #f"{type(text_file)}"
         #f"{text_file.read()}"
         'aaaa'   
-        with open('https://github.com/arct0r/projectWork/raw/main/Prova.txt', 'r') as testo:
+        with open('Prova.txt', 'r') as testo:
             text = testo.read()
         #st.write(text)
         confirm = st.button(label='Ask gemini')
