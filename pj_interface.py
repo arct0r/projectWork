@@ -37,7 +37,7 @@ elif source ==':blue[CIR]':
         csv
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
-        domanda = st.text_area()
+        domanda = st.text_area(label='Type your input here')
         confirm = st.button(label='Ask gemini')
         if confirm:
             response = model.generate_content(f"Test. Come va?")
