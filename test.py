@@ -27,10 +27,10 @@ with open('pdf.pdf', 'rb') as file:
         text_file.write(testo)
 
 
-
+'''
     genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
 
     model = genai.GenerativeModel(model_name="gemini-1.5-flash")
     response = model.generate_content(f"Test. Come va?")
     print(response.text)
-
+'''
