@@ -29,7 +29,7 @@ elif source ==':blue[CIR]':
         result = csv.loc[csv['Ingredienti'] == substance]
         link = result.iloc[0]['Link']   
         link
-        page_ref = rq.get(link)s
+        page_ref = rq.get(link)
         page_soup = bs(page_ref.text, 'html.parser')
         table = getDF(link)
         table     
