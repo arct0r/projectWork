@@ -82,7 +82,7 @@ def get_pdf_pages(df):
         dossier = rq.get(link)
         with open('dossier.pdf', 'wb') as file:
             file.write(dossier.content)
-        with open('pdf.pdf', 'rb') as file_read:
+        with open('dossier.pdf', 'rb') as file_read:
             pdf_file = pdfr(file_read)
             # number_of_pages = len(pdf_file.pages)
             extracted_pages = [p.extract_text() for p in pdf_file.pages]
