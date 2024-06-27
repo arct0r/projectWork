@@ -33,6 +33,7 @@ elif source ==':blue[CIR]':
         page_ref = rq.get(link)
         page_soup = bs(page_ref.text, 'html.parser')
         table = getDF(link)
+        '''
         #table
         pagine = get_pdf_pages(table)
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
@@ -41,12 +42,12 @@ elif source ==':blue[CIR]':
         qq = 'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti, poi creami una tabella coi valori trovati\n'
         git_link = 'https://github.com/arct0r/projectWork/raw/main/Prova.txt'
         file = rq.get(git_link)
-        file
         confirm = st.button(label='Ask gemini')
         prompt = f"{qq} : \n {file}"
         if confirm:
             response = model.generate_content(prompt)
             response.text
+        '''
         
     else:
         csv
