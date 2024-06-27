@@ -76,9 +76,9 @@ def getDF_soup():
 
 getDF_soup()
 
-def get_pdf_pages(links_col):
+def get_pdf_pages(df):
     ref_pages = []
-    for l in links_col:
+    for l in df['Link']:
         dossier = rq.get(l)
         pdf_file = pdfr(dossier)
         # number_of_pages = len(pdf_file.pages)
