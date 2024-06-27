@@ -39,8 +39,8 @@ elif source ==':blue[CIR]':
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         domanda = st.text_area(label='Type your input here')
         confirm = st.button(label='Ask gemini')
-        if confirm:
-            response = model.generate_content(f"Test. Come va?")
+        if confirm and domanda:
+            response = model.generate_content(domanda)
             response.text
 
 
