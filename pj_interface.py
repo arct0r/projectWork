@@ -43,6 +43,7 @@ elif source ==':blue[CIR]':
         #print(qq+text_file.read())
         'test'
         f"{type(text_file)}"
+        f"{text_file.read()}"
         testo = text_file.read()
         testo
         confirm = st.button(label='Ask gemini')
