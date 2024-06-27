@@ -45,7 +45,7 @@ elif source ==':blue[CIR]':
         'aaaa'   
         git_link = 'https://github.com/arct0r/projectWork/raw/main/Prova.txt'
         file = rq.get(git_link)
-        file
+        file.json()
         #with open(, 'r') as testo:
          #   text = testo.read()
         #st.write(text)
