@@ -35,7 +35,7 @@ elif source ==':blue[CIR]':
         table = getDF(link)
         #table
         pagine = get_pdf_pages(table)
-        dossier_text = create_text
+        dossier_text = create_text(pagine)
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         # domanda = st.text_area(label='Type your input here')
