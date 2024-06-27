@@ -45,7 +45,7 @@ elif source ==':blue[CIR]':
         with open('Prova.txt', 'r') as testo:
             text = testo.read()
         #st.write(text)
-        #'aaaa'   
+        'aaaa'   
         confirm = st.button(label='Ask gemini')
         if confirm:
             response = model.generate_content(f"{qq} : \n {text}")
