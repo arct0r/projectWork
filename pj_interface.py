@@ -43,7 +43,7 @@ elif source ==':blue[CIR]':
         #print(qq+text_file.read())
         confirm = st.button(label='Ask gemini')
         if confirm:
-            response = model.generate_content(qq+text_file.read())
+            response = model.generate_content(qq, text_file.read())
             response.text
 
 
