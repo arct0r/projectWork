@@ -91,13 +91,9 @@ def get_pdf_pages(df):
                     ref_pages.append(page)
         #print(len(ref_pages))
         #print(ref_pages)
-
-    return ref_pages
-
-def create_text(pages):
-    text_file = open("Prova.txt", "w")
-    for testo in pages:
-        text_file.write(testo)
+        text_file = open("Prova.txt", "w")
+        for testo in ref_pages:
+            text_file.write(testo)
     
     return text_file
 

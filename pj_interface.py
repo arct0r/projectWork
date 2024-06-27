@@ -35,7 +35,6 @@ elif source ==':blue[CIR]':
         table = getDF(link)
         #table
         pagine = get_pdf_pages(table)
-        dossier_text = create_text(pagine)
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         # domanda = st.text_area(label='Type your input here')
@@ -43,7 +42,7 @@ elif source ==':blue[CIR]':
         git_link = 'https://github.com/arct0r/projectWork/raw/main/Prova.txt'
         file = rq.get(git_link)
         confirm = st.button(label='Ask gemini')
-        prompt = f"{qq} : \n {dossier_text.read()}"
+        prompt = f"{qq} : \n {pagine.read()}"
         prompt
         '''
         if confirm:
