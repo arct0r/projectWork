@@ -42,13 +42,13 @@ elif source ==':blue[CIR]':
         qq = 'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti, poi creami una tabella coi valori trovati\n'
         #print(qq+text_file.read())
         'test'
-        f"{type(text_file)}"
-        f"{text_file.read()}"
+        #f"{type(text_file)}"
+        #f"{text_file.read()}"
         testo = text_file.read()
-        testo
+        #testo
         confirm = st.button(label='Ask gemini')
         if confirm:
-            response = model.generate_content(qq + testo)
+            response = model.generate_content(f"{qq} : \n {testo}")
             response.text
 
 
