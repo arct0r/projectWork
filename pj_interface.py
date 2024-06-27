@@ -37,10 +37,15 @@ elif source ==':blue[CIR]':
         csv
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
-        domanda = st.text_area(label='Type your input here')
+        # domanda = st.text_area(label='Type your input here')
+        text_file = open('Prova.txt', 'r')
+        qq = 'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti, poi creami una tabella che posso trasformare in un dataframe di pandas per Python\n'
+        #print(qq+text_file.read())
+        testo = text_file.read()
+        testo
         confirm = st.button(label='Ask gemini')
-        if confirm and domanda:
-            response = model.generate_content(domanda)
+        if confirm:
+            response = model.generate_content(qq, testo)
             response.text
 
 
