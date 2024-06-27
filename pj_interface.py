@@ -43,12 +43,15 @@ elif source ==':blue[CIR]':
         #f"{type(text_file)}"
         #f"{text_file.read()}"
         'aaaa'   
-        with open('https://github.com/arct0r/projectWork/raw/main/Prova.txt', 'r') as testo:
-            text = testo.read()
+        git_link = 'https://github.com/arct0r/projectWork/raw/main/Prova.txt'
+        file = rq.get(git_link)
+        file
+        #with open(, 'r') as testo:
+         #   text = testo.read()
         #st.write(text)
         confirm = st.button(label='Ask gemini')
         if confirm:
-            response = model.generate_content(f"{qq} : \n {text}")
+            response = model.generate_content(f"{qq} : \n {file}")
             response.text
 
 
