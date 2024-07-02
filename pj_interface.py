@@ -56,8 +56,30 @@ if source == ":rainbow[ECHA]":
     if echa_substance_select:      
         with st.status("Downloading data...", expanded=True) as status:
             st.write("Cerco la sostanza selezionata sul sito dell'echa")
-            content = get_website_content('https://chem.echa.europa.eu/')
-            st.write(content)
+            url = 'https://chem.echa.europa.eu/'
+            # Inizializzo tutto l'ambaradam per scrappare sto dannato sito dell'ECHA
+            # Parte del codice è scopiazzato da un eroe che è riuscito a far funzionare Selenium su Streamlit. 
+            driver = None
+            try:
+                # Using on Local
+                options = webdriver.ChromeOptions()
+                options.add_argument('--headless')
+                #options.add_argument('--disable-gpu')
+                #options.add_argument('--window-size=1920,1200')
+                driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
+                                        options=options)
+                st.write(f"DEBUG:DRIVER:{driver}")
+                driver.get(url)
+                html_doc = driver.page_source
+                html_doc
+                driver.quit()
+                #soup = BeautifulSoup(html_doc, "html.parser")
+
+            except Exception as e:
+                st.write(f"DEBUG:INIT_DRIVER:ERROR:{e}")
+            finally:
+                if driver is not None: driver.quit()
+
 
 elif source ==':blue[CIR]':
     with open("cir-reports.csv") as tab:
