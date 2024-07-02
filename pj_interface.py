@@ -69,7 +69,7 @@ if source == ":rainbow[ECHA]":
                 # Using on Local
                 st.write("Inizializzo i processi di Selenium")
                 options = webdriver.ChromeOptions()
-                #options.add_argument('--headless')
+                options.add_argument('--headless')
                 #options.add_argument('--disable-gpu')
                 #options.add_argument('--window-size=1920,1200')
                 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),
