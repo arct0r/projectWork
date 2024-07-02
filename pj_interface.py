@@ -35,15 +35,16 @@ def get_website_content(url):
         if driver is not None: driver.quit()
     return None
 
-st.title('⌬ Substance Searcher 🧪')
+col1, col2 = st.columns([7,3])
+with col1:
+    st.title('🧪 Substance Searcher ')
 
-
-
-#Bottone
-source = st.radio(
-    "Seleziona la fonte di dati",
-    [":rainbow[ECHA]", ":blue[CIR]"],
-    captions = ["Più veloce, attraverso l'API di Iuclid", "Scraping manuale, lento"], horizontal=True, index=1)
+with col2:
+    #Bottone
+    source = st.radio(
+        "",
+        options=[":rainbow[ECHA]", ":blue[CIR]"],
+        captions = ["Più veloce.", "Più lento."], horizontal=True, index=1)
 
 if source == ":rainbow[ECHA]":
     echastuff = pd.read_excel('echastuff.xlsx')
