@@ -1,7 +1,7 @@
 # Qui dal sito creiamo una tabella pandas
 import pandas as pd 
 import requests as rq
-from PyPDF2 import PdfReader as pdfr
+from PyPDF2 import PdfReader
 from bs4 import BeautifulSoup as bs
 import os
 import re
@@ -88,7 +88,7 @@ def get_pdf_pages(df):
         with open('dossier.pdf', 'wb') as file:
             file.write(dossier.content)
         with open('dossier.pdf', 'rb') as ff:
-            pdf = pdfr(file)
+            pdf = PdfReader(ff)
             number_of_pages = len(pdf.pages)
             extracted_pages = [p.extract_text() for p in pdf.pages]
 
