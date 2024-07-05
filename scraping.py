@@ -1,8 +1,12 @@
 # Qui dal sito creiamo una tabella pandas
 import pandas as pd 
 import requests as rq
-from PyPDF2 import PdfReader as pdfr
+from PyPDF2 import PdfReader
 from bs4 import BeautifulSoup as bs
+import os
+import re
+
+dossier_path = 'C:/Users/PierluigiDurante/OneDrive - ITS Angelo Rizzoli/Desktop/Project Work 1/Progetto/projectWork/dossier.pdf'
 
 # with open('quacker.html', errors='ignore') as page:
     #soup = BeautifulSoup(page, 'html.parser')
@@ -78,24 +82,26 @@ getDF_soup()
 
 def get_pdf_pages(df):
     ref_pages = []
+    keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b"  # Combine keywords with word boundaries
     for link in df['Link']:
         dossier = rq.get(link)
         with open('dossier.pdf', 'wb') as file:
             file.write(dossier.content)
-        with open('dossier.pdf', 'rb') as file_read:
-            pdf_file = pdfr(file_read)
-            # number_of_pages = len(pdf_file.pages)
-            extracted_pages = [p.extract_text() for p in pdf_file.pages]
+        with open('dossier.pdf', 'rb') as ff:
+            pdf = PdfReader(ff)
+            number_of_pages = len(pdf.pages)
+            extracted_pages = [p.extract_text() for p in pdf.pages]
+
             for page in extracted_pages:
-                if "LD50" in page or "NOAEL" in page:
-                    ref_pages.append(page)
-        #print(len(ref_pages))
-        #print(ref_pages)
-        text_file = open("Prova.txt", "w")
-        for testo in ref_pages:
-            text_file.write(testo)
+                for match in re.finditer(keywords, page):
+                    start_index = max(0, match.start() - 250)  # Ensure start doesn't go negative
+                    end_index = min(len(page), match.end() + 250)  # Ensure end doesn't exceed length
+                    snippet = page[start_index:end_index]
+                    ref_pages.append(snippet)
+        
+        with open("dossier.txt", "w") as text_file:
+            for testo in ref_pages:
+                text_file.write(testo)
     
     return text_file
-
-
 
