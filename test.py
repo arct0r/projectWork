@@ -14,24 +14,21 @@ txt_path = 'C:/Users/PierluigiDurante/OneDrive - ITS Angelo Rizzoli/Desktop/Proj
 if os.path.exists(pdf_path):
     os.remove(pdf_path)
 
-with open('dossier.pdf', 'wb') as file:
-    file.write(dossier.content)
+#with open('dossier.pdf', 'wb') as file:
+contenuto = dossier.content
+pdf = PdfReader(contenuto)
+number_of_pages = len(pdf.pages)
+extracted_pages = [p.extract_text() for p in pdf.pages]
 
+dossier_text= ''
+keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b"  # Combine keywords with word boundaries
 
-with open('dossier.pdf', 'rb') as file:
-  pdf = PdfReader(file)
-  number_of_pages = len(pdf.pages)
-  extracted_pages = [p.extract_text() for p in pdf.pages]
-
-  ref_pages = []
-  keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b"  # Combine keywords with word boundaries
-
-  for page in extracted_pages:
+for page in extracted_pages:
     for match in re.finditer(keywords, page):
-      start_index = max(0, match.start() - 250)  # Ensure start doesn't go negative
-      end_index = min(len(page), match.end() + 250)  # Ensure end doesn't exceed length
-      snippet = page[start_index:end_index]
-      ref_pages.append(snippet)
+        start_index = max(0, match.start() - 250)  # Ensure start doesn't go negative
+        end_index = min(len(page), match.end() + 250)  # Ensure end doesn't exceed length
+        snippet = page[start_index:end_index]
+        dossier_text += snippet.replace('\n',' ')
 
 '''
 with open('dossier.pdf', 'rb') as file:
