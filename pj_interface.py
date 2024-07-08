@@ -112,9 +112,8 @@ elif source ==':blue[CIR]':
     if substance:
         result = csv.loc[csv['Ingredienti'] == substance]
         link = result.iloc[0]['Link']  
-        dossier_ref = rq.get(link)
-        table = getDF(dossier_ref)
-        dossier_link = table.iloc[0]
+        table = getDF(link)
+        dossier_link = table.iloc[0]['Link']
         dossier_text = get_pdf_content(dossier_link)
         dossier_text
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
