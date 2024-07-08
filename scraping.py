@@ -23,7 +23,7 @@ def getDF(link):
     page_ref = rq.get(link)
     page_soup = bs(page_ref.text, 'html.parser')
     
-    reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a')]
+    reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a') if i=='Published Report']
     # Pigliamo tutti i link
 
     test = [i.contents for i in page_soup.findAll('td')]
