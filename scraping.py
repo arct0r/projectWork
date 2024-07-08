@@ -1,12 +1,12 @@
 # Qui dal sito creiamo una tabella pandas
 import pandas as pd 
 import requests as rq
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 from bs4 import BeautifulSoup as bs
 import os
 import re
 from io import BytesIO
-import PyPDF2
+
 
 dossier_path = 'C:/Users/PierluigiDurante/OneDrive - ITS Angelo Rizzoli/Desktop/Project Work 1/Progetto/projectWork/dossier.pdf'
 
@@ -18,12 +18,14 @@ dossier_path = 'C:/Users/PierluigiDurante/OneDrive - ITS Angelo Rizzoli/Desktop/
 # Funzione che crea il dataframe con tutte le report e le reference, una volta definito l'ingrediente,
 # prende in input il link della pagina contenente tutte le report dell'ingrediente
 
+link = 'https://cir-reports.cir-safety.org/cir-ingredient-status-report/?id=b77dee6a-9067-4aea-9f68-d6b4e31c3523'
+
 # Dato un link di CIR questa funzione restituisce una tabella con le informazioni e i link ai pdf
 def getDF(link):
     page_ref = rq.get(link)
     page_soup = bs(page_ref.text, 'html.parser')
     
-    reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a')]
+    reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a') if i.text == 'Published Report']
     # Pigliamo tutti i link
 
     test = [i.contents for i in page_soup.findAll('td')]
@@ -45,6 +47,7 @@ def getDF(link):
     
     df = df.drop(['Name','Status'], axis=1) #temp drop
     return df
+
 
 # Funzione per testare lo scraping manualmente
 def getDF_soup():
@@ -112,12 +115,12 @@ def get_pdf_content(url):
     dossier = rq.get(url)
     contenuto_byte = dossier.content
     pdf_conv = BytesIO(contenuto_byte)
-    pdf = PyPDF2.PdfReader(pdf_conv)      
+    pdf = PdfReader(pdf_conv)      
     #number_of_pages = len(pdf.pages)
     extracted_pages = [p.extract_text() for p in pdf.pages]
 
     dossier_text= ''
-    keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b"  # Combine keywords with word boundaries
+    keywords = r"LD50|NOAEL|LD50s|LD 50"  # Combine keywords with word boundaries
 
     for page in extracted_pages:
         for match in re.finditer(keywords, page):
@@ -127,3 +130,6 @@ def get_pdf_content(url):
             dossier_text += snippet.replace('\n',' ')
 
     return dossier_text
+
+url = 'https://cir-reports.cir-safety.org/view-attachment/?id=a9a8b89b-8e74-ec11-8943-0022482f06a6'
+get_pdf_content(url)
