@@ -113,7 +113,7 @@ elif source ==':blue[CIR]':
         result = csv.loc[csv['Ingredienti'] == substance]
         link = result.iloc[0]['Link']  
         dossier_ref = rq.get(link)
-        table = getDF(link)
+        table = getDF(dossier_ref)
         dossier_link = table.iloc[0]
         dossier_text = get_pdf_content(dossier_link)
         dossier_text
