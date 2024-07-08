@@ -112,8 +112,11 @@ elif source ==':blue[CIR]':
     if substance:
         result = csv.loc[csv['Ingredienti'] == substance]
         link = result.iloc[0]['Link']  
-        link
+        dossier_ref = rq.get(link)
+        table = getDF(link)
+        table
         dossier_text = get_pdf_content(link)
+        dossier_text
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         # domanda = st.text_area(label='Type your input here')
