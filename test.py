@@ -1,9 +1,10 @@
 import requests as rq
-from PyPDF2 import PdfReader
+import PyPDF2 
 import google.generativeai as genai
 import PIL.Image
 import os
 import re
+from io import BytesIO 
 
 url = 'https://cir-reports.cir-safety.org/view-attachment/?id=4462ac6b-8e74-ec11-8943-0022482f06a6'
 
@@ -16,9 +17,10 @@ if os.path.exists(pdf_path):
 
 #with open('dossier.pdf', 'wb') as file:
 contenuto = dossier.content
-pdf = PdfReader(contenuto)
-number_of_pages = len(pdf.pages)
-extracted_pages = [p.extract_text() for p in pdf.pages]
+pdf = BytesIO(contenuto)
+pdf_2 = PyPDF2.PdfReader(pdf)      
+number_of_pages = len(pdf_2.pages)
+extracted_pages = [p.extract_text() for p in pdf_2.pages]
 
 dossier_text= ''
 keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b"  # Combine keywords with word boundaries
@@ -35,7 +37,7 @@ with open('dossier.pdf', 'rb') as file:
     pdf = PdfReader(file)
     number_of_pages = len(pdf.pages)
     extracted_pages = [p.extract_text() for p in pdf.pages]
-    for page in extracted_pages:
+    for page in extracted-_pages:
         if "LD50" in page or "NOAEL" in page or "LD50s" in page or "LD 50" in page:
             ref_pages.append(page)
     print(len(ref_pages))
