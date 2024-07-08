@@ -1,11 +1,11 @@
 import streamlit as st
 import zipfile
 from bs4 import BeautifulSoup
-import lxml
 import lxml.etree as etree
-import lxml.html
-import requests
-
+import xmltodict
+import pprint
+import json
+import streamlit.components.v1 as components
 
 
 def transform_xml_with_xsl(xml_file, xsl_file):
@@ -43,33 +43,33 @@ with zipfile.ZipFile('32c89044-3a73-48cf-b60c-81f746554bff.i6z', 'r') as zip_ref
 
 with open('.\extractedi6z\manifest.xml', 'r') as manifest:
     data = manifest.read()
+    bs_data = BeautifulSoup(data)
+    bs_data.prettify()
+    documents = bs_data.find_all('document')
+    tags_content = [a.find_all({'subtype':'DataTox', 'name':''}) for a in documents]
+    DataTox_content = [b for b in tags_content if 'DataTox' in b[0]][0]
+    DataTox_content
+    DataTox_content_link = DataTox_content[1]
+    DataTox_content_link = DataTox_content_link.attrs['xlink:href']
+    DataTox_content_link
+# DataTox data link is extracted. Now we open it.
 
-bs_data = BeautifulSoup(data)
-bs_data.prettify()
-documents = bs_data.find_all('document')
-tags_content = [a.find_all({'subtype':'DataTox', 'name':''}) for a in documents]
-DataTox_content = [b for b in tags_content if 'DataTox' in b[0]][0]
-DataTox_content
-DataTox_content_link = DataTox_content[1]
-DataTox_content_link = DataTox_content_link.attrs['xlink:href']
-DataTox_content_link
+# Opening XML file with beautifulsoup.
+with open(f".\extractedi6z\{DataTox_content_link}", 'r') as DataTox_i6d:
+    DataTox_i6d_content = DataTox_i6d.read()
+    DataTox_xml = BeautifulSoup(DataTox_i6d_content, 'lxml')
+    print(DataTox_xml.prettify())
+    pp = pprint.PrettyPrinter(indent=4)
+    c = xmltodict.parse(DataTox_i6d_content)
+    # Ho trasformato l'xml in un mega dizionario, una specie di Json. 
+    useful_stuff = c['i6c:Document']['i6c:Content']['ENDPOINT_SUMMARY.DataTox']
+    useful_stuff
+    print(useful_stuff)
+    # Da questo idealmente vorrei creare una tabella.
 
-
-#transform_xml_with_xsl(f".\extractedi6z\{DataTox_content_link}", '.\extractedi6z\ENDPOINT_SUMMARY-DataTox.xsl')
-
-
-#with open(f'.\extractedi6z\DataTox_content_link') as summaryValues:
-
-#type tag
-#datatox[0]
-#attrs={'type':'ENDPOINT_SUMMARY'} 
-
-#<type>ENDPOINT_SUMMARY</type>
-#[string for string in datatox if 'ENDPOINT_SUMMARY' in string]
-#datatox
-
-
-# Using find() to extract attributes 
-# of the first instance of the tag
-#b_name = bs_data.find('child', {'subtype':'DataTox'})
-#b_name
+# Ora facciamo lo stesso con l'xsl
+with open(f".\extractedi6z\ENDPOINT_SUMMARY-DataTox.xsl", 'r') as DataTox_xsl:
+    DataTox_xsl_content = DataTox_xsl.read()
+    d = xmltodict.parse(DataTox_xsl_content)
+    # Ho trasformato l'xml in un mega dizionario, una specie di Json. 
+    useful_stuff = d['xsl:stylesheet']['xsl:template']
