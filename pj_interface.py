@@ -116,7 +116,7 @@ elif source ==':blue[CIR]':
         dossier_link = table.iloc[0]['Link']
         #dossier_link
         dossier_text = get_pdf_content(dossier_link)
-        #dossier_text
+        dossier_text
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         # domanda = st.text_area(label='Type your input here')
