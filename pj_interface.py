@@ -114,6 +114,7 @@ elif source ==':blue[CIR]':
         link = result.iloc[0]['Link']  
         table = getDF(link)
         dossier_link = table.iloc[0]['Link']
+        dossier_link
         dossier_text = get_pdf_content(dossier_link)
         dossier_text
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
