@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from bs4 import BeautifulSoup as bs
 import requests as rq
-from scraping import getDF, get_pdf_pages
+from scraping import getDF, get_pdf_content
 import google.generativeai as genai
 import time 
 
@@ -111,21 +111,22 @@ elif source ==':blue[CIR]':
     #st.write("Attempting to search: ", substance)
     if substance:
         result = csv.loc[csv['Ingredienti'] == substance]
-        link = result.iloc[0]['Link']   
+        link = result.iloc[0]['Link']  
+        ''' 
         #linkjhmjm
         page_ref = rq.get(link)
         page_soup = bs(page_ref.text, 'html.parser')
         table = getDF(link)
         #table
         pagine = get_pdf_pages(table)
+        '''
+        dossier_text = get_pdf_content(link)
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         # domanda = st.text_area(label='Type your input here')
         qq = 'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti, poi creami una tabella coi valori trovati\n'
-        git_link = 'https://github.com/arct0r/projectWork/raw/main/Prova.txt'
-        file = rq.get(git_link)
         confirm = st.button(label='Ask gemini')
-        prompt = f"{qq} : \n {file.text}"
+        prompt = f"{qq} : \n {dossier_text}"
         if confirm:
             response = model.generate_content(prompt)
             response.text

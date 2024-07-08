@@ -6,31 +6,30 @@ import os
 import re
 from io import BytesIO 
 
-url = 'https://cir-reports.cir-safety.org/view-attachment/?id=4462ac6b-8e74-ec11-8943-0022482f06a6'
-
-dossier = rq.get(url)
-pdf_path = 'C:/Users/PierluigiDurante/OneDrive - ITS Angelo Rizzoli/Desktop/Project Work 1/Progetto/projectWork/dossier.pdf'
-txt_path = 'C:/Users/PierluigiDurante/OneDrive - ITS Angelo Rizzoli/Desktop/Project Work 1/Progetto/projectWork/dossier.txt'
-
+'''
 if os.path.exists(pdf_path):
     os.remove(pdf_path)
+'''
 
-#with open('dossier.pdf', 'wb') as file:
-contenuto = dossier.content
-pdf = BytesIO(contenuto)
-pdf_2 = PyPDF2.PdfReader(pdf)      
-number_of_pages = len(pdf_2.pages)
-extracted_pages = [p.extract_text() for p in pdf_2.pages]
+def get_pdf_content(url):
+    dossier = rq.get(url)
+    contenuto_byte = dossier.content
+    pdf_conv = BytesIO(contenuto_byte)
+    pdf = PyPDF2.PdfReader(pdf_conv)      
+    #number_of_pages = len(pdf.pages)
+    extracted_pages = [p.extract_text() for p in pdf.pages]
 
-dossier_text= ''
-keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b"  # Combine keywords with word boundaries
+    dossier_text= ''
+    keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b"  # Combine keywords with word boundaries
 
-for page in extracted_pages:
-    for match in re.finditer(keywords, page):
-        start_index = max(0, match.start() - 250)  # Ensure start doesn't go negative
-        end_index = min(len(page), match.end() + 250)  # Ensure end doesn't exceed length
-        snippet = page[start_index:end_index]
-        dossier_text += snippet.replace('\n',' ')
+    for page in extracted_pages:
+        for match in re.finditer(keywords, page):
+            start_index = max(0, match.start() - 250)  # Ensure start doesn't go negative
+            end_index = min(len(page), match.end() + 250)  # Ensure end doesn't exceed length
+            snippet = page[start_index:end_index]
+            dossier_text += snippet.replace('\n',' ')
+
+    return dossier_text
 
 '''
 with open('dossier.pdf', 'rb') as file:
@@ -42,16 +41,15 @@ with open('dossier.pdf', 'rb') as file:
             ref_pages.append(page)
     print(len(ref_pages))
     print(ref_pages)
-'''
+
     
 if os.path.exists(txt_path):
     os.remove(txt_path)
 with open("dossier.txt", "w") as text:
-    for testo in ref_pages:
+    for testo in dossier_text:
         text.write(testo)
 
 
-'''
     genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
 
     model = genai.GenerativeModel(model_name="gemini-1.5-flash")

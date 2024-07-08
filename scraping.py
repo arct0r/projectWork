@@ -5,6 +5,8 @@ from PyPDF2 import PdfReader
 from bs4 import BeautifulSoup as bs
 import os
 import re
+from io import BytesIO
+import PyPDF2
 
 dossier_path = 'C:/Users/PierluigiDurante/OneDrive - ITS Angelo Rizzoli/Desktop/Project Work 1/Progetto/projectWork/dossier.pdf'
 
@@ -78,8 +80,8 @@ def getDF_soup():
 
     return None
 
-getDF_soup()
 
+'''
 def get_pdf_pages(df):
     ref_pages = []
     keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b"  # Combine keywords with word boundaries
@@ -104,4 +106,24 @@ def get_pdf_pages(df):
                 text_file.write(testo)
     
     return text_file
+'''
 
+def get_pdf_content(url):
+    dossier = rq.get(url)
+    contenuto_byte = dossier.content
+    pdf_conv = BytesIO(contenuto_byte)
+    pdf = PyPDF2.PdfReader(pdf_conv)      
+    #number_of_pages = len(pdf.pages)
+    extracted_pages = [p.extract_text() for p in pdf.pages]
+
+    dossier_text= ''
+    keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b"  # Combine keywords with word boundaries
+
+    for page in extracted_pages:
+        for match in re.finditer(keywords, page):
+            start_index = max(0, match.start() - 250)  # Ensure start doesn't go negative
+            end_index = min(len(page), match.end() + 250)  # Ensure end doesn't exceed length
+            snippet = page[start_index:end_index]
+            dossier_text += snippet.replace('\n',' ')
+
+    return dossier_text
