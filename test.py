@@ -11,16 +11,19 @@ if os.path.exists(pdf_path):
     os.remove(pdf_path)
 '''
 
+url = 'https://cir-reports.cir-safety.org/view-attachment/?id=ad62ac6b-8e74-ec11-8943-0022482f06a6'
+
 def get_pdf_content(url):
     dossier = rq.get(url)
     contenuto_byte = dossier.content
     pdf_conv = BytesIO(contenuto_byte)
     pdf = PyPDF2.PdfReader(pdf_conv)      
     #number_of_pages = len(pdf.pages)
-    extracted_pages = [p.extract_text() for p in pdf.pages]
+    keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b" 
+    extracted_pages = [p.extract_text() for p in pdf.pages if keywords in p]
 
     dossier_text= ''
-    keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b"  # Combine keywords with word boundaries
+     # Combine keywords with word boundaries
 
     for page in extracted_pages:
         for match in re.finditer(keywords, page):
@@ -30,6 +33,8 @@ def get_pdf_content(url):
             dossier_text += snippet.replace('\n',' ')
 
     return dossier_text
+
+
 
 '''
 with open('dossier.pdf', 'rb') as file:

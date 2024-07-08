@@ -1,7 +1,7 @@
 # Qui dal sito creiamo una tabella pandas
 import pandas as pd 
 import requests as rq
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 from bs4 import BeautifulSoup as bs
 import os
 import re
@@ -112,12 +112,12 @@ def get_pdf_content(url):
     dossier = rq.get(url)
     contenuto_byte = dossier.content
     pdf_conv = BytesIO(contenuto_byte)
-    pdf = PyPDF2.PdfReader(pdf_conv)      
+    pdf = PdfReader(pdf_conv)      
     #number_of_pages = len(pdf.pages)
     extracted_pages = [p.extract_text() for p in pdf.pages]
 
     dossier_text= ''
-    keywords = r"\b(LD50|NOAEL|LD50s|LD 50)\b"  # Combine keywords with word boundaries
+    keywords = r"LD50|NOAEL|LD50s|LD 50"  # Combine keywords with word boundaries
 
     for page in extracted_pages:
         for match in re.finditer(keywords, page):
@@ -127,3 +127,6 @@ def get_pdf_content(url):
             dossier_text += snippet.replace('\n',' ')
 
     return dossier_text
+
+url = 'https://cir-reports.cir-safety.org/view-attachment/?id=a9a8b89b-8e74-ec11-8943-0022482f06a6'
+get_pdf_content(url)
