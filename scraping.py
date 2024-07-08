@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup as bs
 import os
 import re
 from io import BytesIO
-import PyPDF2
+
 
 dossier_path = 'C:/Users/PierluigiDurante/OneDrive - ITS Angelo Rizzoli/Desktop/Project Work 1/Progetto/projectWork/dossier.pdf'
 
@@ -18,12 +18,14 @@ dossier_path = 'C:/Users/PierluigiDurante/OneDrive - ITS Angelo Rizzoli/Desktop/
 # Funzione che crea il dataframe con tutte le report e le reference, una volta definito l'ingrediente,
 # prende in input il link della pagina contenente tutte le report dell'ingrediente
 
+link = 'https://cir-reports.cir-safety.org/cir-ingredient-status-report/?id=b77dee6a-9067-4aea-9f68-d6b4e31c3523'
+
 # Dato un link di CIR questa funzione restituisce una tabella con le informazioni e i link ai pdf
 def getDF(link):
     page_ref = rq.get(link)
     page_soup = bs(page_ref.text, 'html.parser')
     
-    reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a') if i=='Published Report']
+    reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a') if i.text == 'Published Report']
     # Pigliamo tutti i link
 
     test = [i.contents for i in page_soup.findAll('td')]
@@ -45,6 +47,7 @@ def getDF(link):
     
     df = df.drop(['Name','Status'], axis=1) #temp drop
     return df
+
 
 # Funzione per testare lo scraping manualmente
 def getDF_soup():
