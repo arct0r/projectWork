@@ -7,7 +7,7 @@ import urllib.parse
 import lxml
 import pandas as pd
 
-with open("testpagesummary2.html") as summary:
+with open("testpagesummary4.html") as summary:
     summary = summary.read()
     soup = BeautifulSoup(summary)
     soup.prettify()
@@ -15,6 +15,10 @@ with open("testpagesummary2.html") as summary:
 
     section_names = {section.find('h3').text.lstrip().rstrip() : section for section in sections if 'Additional information' not in section.find('h3').text.lstrip().rstrip()}
     'section_names'
+    l = list(section_names.keys())
+    'List of sections'
+    l
+
     with st.expander('Sections'):
         section_names
     st.divider()
@@ -29,13 +33,12 @@ with open("testpagesummary2.html") as summary:
             with st.expander(f'**{key}** : Values Pre Serious processing'):
                 inner_divs
         values_corrected = []
-        flag_for_next = None
+        skip = None
         # Ora per ogni sezione ho tutta una serie di divs. Li devo processare e pulirli perchè hanno diverse zozzerie all'interno.
         for div in inner_divs:
-            if flag_for_next == True:
-                flag_for_next = False
-                f":orange[inner_divs: {inner_divs}]"
-
+            if skip == True:
+                skip = False
+                continue
             if ('mg/' or '/kg' or 'bw/' or '/day') in inner_divs:
                 # Questa condizione mi serve a fare in modo che l'algoritmo non mi splitti il value con le unità di misura in righe diverse
                 f'debugging:'
@@ -54,18 +57,17 @@ with open("testpagesummary2.html") as summary:
                 # sta condizione serve quando ho situazioni di questo tipo:
                  #inner_div: ['Value', '', '', '', '', '', '2.4', ' mg/kg bw/day']
                     f'Debugging. inner_divs[0] = {inner_divs[0]}, inner_divs[-2] = {inner_divs[-2]}, inner_divs[-1] = {inner_divs[-1]}'
-                    print(inner_divs[0], " | ",  inner_divs[-2])
+                    print("Found similiar 0 and -2:" ,inner_divs[0], " | ",  inner_divs[-2] , " | ", inner_divs[-1])
                     if inner_divs[0] != inner_divs[-2]:
                         values_corrected.append(inner_divs[0].rstrip().lstrip())
                         values_corrected.append(inner_divs[-2].lstrip() + inner_divs[-1].rstrip())
                         f":green[Appended left: **{inner_divs[0].rstrip().lstrip()}** | right: **{inner_divs[-2].lstrip() + inner_divs[-1].rstrip()}**]"
+                        skip = True
+                        # Questo flag serve a far skippare il prossimo div. Non comprenderò questo codice tra qualche minuto
                     else:
+                        print('Trap!')
                         f":red[------------- That's a trap! I'm not appending '{inner_divs[0]} and '{inner_divs[-2]} and '{inner_divs[-1]}']"
-                        f":red[inner_divs: {inner_divs}]"
-                        flag_for_next = True
-
-                    
-                    # Devo appendere sia '2.4' che ' mg/kg bw/day'
+                        f":red[inner_divs: {inner_divs}]"   
                 else:
                     if inner_divs[0] != inner_divs[-2]:
                         values_corrected.append(inner_divs[0].rstrip().lstrip())
@@ -98,15 +100,30 @@ with open("testpagesummary2.html") as summary:
     for section in sections_ordered:
         pandas_dfs[section] = df_base
         for row in sections_ordered[section]:
-            pandas_dfs[section] = pandas_dfs[section]._append({'Description':row[0],'Value':row[1]}, ignore_index=True)
+            if row[1] not in ['[Empty]', '[Not publishable]', 'no hazard identified'] and row[0]!=row[1]:
+                # Con questa condizione faccio ignorare le righe inutili o le ripetizioni
+                pandas_dfs[section] = pandas_dfs[section]._append({'Description':row[0],'Value':row[1]}, ignore_index=True)
 
     for name in pandas_dfs:
-        name
-        pandas_dfs[name]
+        pandas_dfs[name] = pandas_dfs[name].drop_duplicates()
+        if not pandas_dfs[name].empty:
+            name
+            pandas_dfs[name]
+
+'test'
+pandas_dfs['General Population - Hazard for the eyes'].iloc[-1]['Description'], pandas_dfs['General Population - Hazard for the eyes'].iloc[-1]['Value']
 
             
 
 
-
-    #divs = section_names[0]['Administrative data'].find_all("div")
-    #divs 
+# La struttura di ciò che ci interessa dal Summary Tossicologico. 
+# L'idea è che date queste sezioni l'algoritmo è in grado di andare a cercare le sezioni e a creare una tabella per ogni sottosezione.
+summ_structure = {
+    {'Workers - Hazard via inhalation route'},
+    {'Workers - Hazard via dermal route'},
+    {'Workers - Hazard for the eyes'},
+    {'General Population - Hazard via inhalation route'},
+    {'General Population - Hazard via dermal route}',
+    {'General Population - Hazard via oral route'},
+    {'General Population - Hazard for the eyes'},
+}
