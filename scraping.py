@@ -26,17 +26,18 @@ def getDF(link):
     reports = ['https://cir-reports.cir-safety.org/'+i.get('href')[3:] for i in page_soup.findAll('table')[0].findAll('a') if i.get('href').startswith('..')]
     
     # Pigliamo tutti i link
-
+    '''
     test = [i.contents for i in page_soup.findAll('td')]
     # Pigliamo tutto
 
     test = test[3:]
     # Eliminiamo le prime 3 informazioni estratte. Sono inutili.
-
+    
     df = pd.DataFrame()
     for i in range(0,len(test),3):
         df = pd.concat([df, pd.DataFrame({1: test[i], 2: test[i+1], 3: test[i+2]})], ignore_index=True)
     # Creiamo il dataframe
+
 
     df = df.assign(Link=reports)
     # Inseriamo i link nel dataframe
@@ -45,8 +46,10 @@ def getDF(link):
     # Rinominiamo le colonne del dataframe
     
     df = df.drop(['Name','Status'], axis=1) #temp drop
-    return df
-
+    '''
+    data = {'Links': reports}
+    test_df = pd.DataFrame(data)
+    return test_df
 
 # Funzione per testare lo scraping manualmente
 def getDF_soup():
