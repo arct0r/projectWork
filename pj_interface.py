@@ -113,14 +113,16 @@ elif source ==':blue[CIR]':
         result = csv.loc[csv['Ingredienti'] == substance]
         link = result.iloc[0]['Link']  
         table = getDF(link)
-        dossier_link = table.iloc[0]['Link']
-        #dossier_link
-        dossier_text = get_pdf_content(dossier_link)
-        #dossier_text
+        all_links = table['Link'].tolist()
+        dossier_text = ''
+        for i in len(all_links):
+            dossier_text = get_pdf_content(all_links[i])
+            if dossier_text:
+                break
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         # domanda = st.text_area(label='Type your input here')
-        qq = 'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti, poi creami una tabella coi valori trovati\n'
+        qq = 'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti, poi creami una tabella coi valori trovati. Se non li trovi, restituisci solo il testo: "VALORI NON TROVATI"\n'
         confirm = st.button(label='Ask gemini')
         prompt = f"{qq} : \n {dossier_text}"
         if confirm:
