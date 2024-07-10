@@ -126,7 +126,7 @@ with st.expander('Tree Full'):
 
 # Ora ogni sotto sotto sezione deve essere formattata a sua volta.
 
-def divs_to_df (divtitle, inner_divs, subsection):
+def divs_to_df (effects, divtitle, inner_divs, subsection):
 # Questa è la parte in cui la complessità diventa tale che smetto di capirci qualcosa e vado ad istinto
 # Essenzialmente ho una sfilza di divs rotti e mal formattati da trasformare in dataframes di panda. 
 
@@ -182,8 +182,11 @@ def divs_to_df (divtitle, inner_divs, subsection):
             df_base = df_base._append({'Description':values_corrected[i],'Value':values_corrected[i+1]}, ignore_index=True)
     df_base = df_base.drop_duplicates()   
     if not df_base.empty:
-        divtitle
+        f"{effects}: {divtitle}"
         df_base
+        return True
+    else:
+        return False
     # La fine della sofferenza. Printo il titolo del dataframe e il dataframe solo se non sono vuoti.
     
     
@@ -195,16 +198,18 @@ with st.expander('Final'):
         systemic = tree_full[subsection]['Systemic Effects']
 
         local = tree_full[subsection]['Local Effects']
-        '**Systemic Effects**'
+        effects = '**Systemic Effects**'
+
         for sub_sub in systemic:
             title = sub_sub.find('h3').text
             inner_divs = sub_sub.find_all('div')
-            divs_to_df(title, inner_divs, subsection)
-        '**Local Effects**'
+            divs_to_df(effects, title, inner_divs, subsection)
+
+        effects = '**Systemic Effects**'
         for sub_sub in local:
             title = sub_sub.find('h3').text
             inner_divs = sub_sub.find_all('div')
-            divs_to_df(title, inner_divs, subsection)
+            divs_to_df(effects, title, inner_divs, subsection)
 
 
 
