@@ -32,7 +32,7 @@ if source == ":rainbow[ECHA]":
             substance = echa_substance_select
             final_url = search_dossier(substance)
             if final_url:
-                st.page_link(label='Riassunto tossicologico completo sul sito ECHA', page=final_url)
+                st.page_link(label=':blue[**Riassunto tossicologico completo sul sito ECHA**]', page=final_url)
                 summary_content = rq.get(final_url).text
                 echa_pandas(summary_content)
 

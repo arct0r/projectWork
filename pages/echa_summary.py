@@ -157,7 +157,7 @@ def echa_pandas(summary_content):
                 df_base = df_base._append({'Description':values_corrected[i],'Value':values_corrected[i+1]}, ignore_index=True)
         df_base = df_base.drop_duplicates()   
         if not df_base.empty:
-            st.write(f"{effects}: {divtitle}")
+            st.write(f":orange[**{effects}**]: {divtitle}")
             st.dataframe(df_base, use_container_width=True)
         else:
             return False
