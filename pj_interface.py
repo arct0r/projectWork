@@ -10,8 +10,7 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-import time
-from bs4 import BeautifulSoup
+
 
 def get_website_content(url):
     driver = None
@@ -28,7 +27,7 @@ def get_website_content(url):
         time.sleep(5)
         html_doc = driver.page_source
         driver.quit()
-        soup = BeautifulSoup(html_doc, "html.parser")
+        soup = bs(html_doc, "html.parser")
         return soup.get_text()
     except Exception as e:
         st.write(f"DEBUG:INIT_DRIVER:ERROR:{e}")
@@ -113,9 +112,9 @@ elif source ==':blue[CIR]':
         result = csv.loc[csv['Ingredienti'] == substance]
         link = result.iloc[0]['Link']  
         table = getDF(link)
-        all_links = table['Link'].tolist()
+        all_links = table['Links'].to_list()
         dossier_text = ''
-        for i in len(all_links):
+        for i in range(len(all_links)):
             dossier_text = get_pdf_content(all_links[i])
             if dossier_text:
                 break
