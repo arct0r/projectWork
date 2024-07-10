@@ -2,7 +2,6 @@ import streamlit as st
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
-st.set_page_config(layout="wide")
 
 # Il problema dei riassunti tossicologici (e di questo progetto in generale) è che risulta inutile estrarre numeri a caso riguardanti il NOAEL
 # senza avere tutto il contesto intorno. 
@@ -50,7 +49,7 @@ sections_and_subsections = {}
 # Le classi sul sito echa hanno id di questo tipo: 'das-block GeneralPopulationHazardViaDermalRoute'. Quindi trasformo la mia summ per renderla come gli id.
 id_sections = ['das-block '+section.replace(' ', '').replace('-', '') for section in main_sections]
 
-with open("testpagesummary.html") as summary:
+with open("testpagesummary4.html") as summary:
     summary = summary.read()
     soup = BeautifulSoup(summary)
     soup.prettify()
@@ -183,7 +182,7 @@ def divs_to_df (effects, divtitle, inner_divs, subsection):
     df_base = df_base.drop_duplicates()   
     if not df_base.empty:
         f"{effects}: {divtitle}"
-        df_base
+        st.dataframe(df_base, use_container_width=True)
         return True
     else:
         return False
@@ -191,25 +190,24 @@ def divs_to_df (effects, divtitle, inner_divs, subsection):
     
     
 
-with st.expander('Final'):
-    for subsection in tree_full:
+for subsection in tree_full:
         # Workers x2, Hazard x3
-        st.subheader(subsection)
-        systemic = tree_full[subsection]['Systemic Effects']
+        with st.expander(subsection, expanded=True):
+            systemic = tree_full[subsection]['Systemic Effects']
 
-        local = tree_full[subsection]['Local Effects']
-        effects = '**Systemic Effects**'
+            local = tree_full[subsection]['Local Effects']
+            effects = '**Systemic Effects**'
 
-        for sub_sub in systemic:
-            title = sub_sub.find('h3').text
-            inner_divs = sub_sub.find_all('div')
-            divs_to_df(effects, title, inner_divs, subsection)
+            for sub_sub in systemic:
+                title = sub_sub.find('h3').text
+                inner_divs = sub_sub.find_all('div')
+                divs_to_df(effects, title, inner_divs, subsection)
 
-        effects = '**Systemic Effects**'
-        for sub_sub in local:
-            title = sub_sub.find('h3').text
-            inner_divs = sub_sub.find_all('div')
-            divs_to_df(effects, title, inner_divs, subsection)
+            effects = '**Systemic Effects**'
+            for sub_sub in local:
+                title = sub_sub.find('h3').text
+                inner_divs = sub_sub.find_all('div')
+                divs_to_df(effects, title, inner_divs, subsection)
 
 
 
