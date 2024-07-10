@@ -19,7 +19,7 @@ with col2:
     source = st.radio(
         "",
         options=[":rainbow[ECHA]", ":blue[CIR]"],
-        captions = ["Più veloce.", "Più lento."], horizontal=True, index=1)
+        captions = ["Veloce.", "Lento."], horizontal=True, index=0)
 
 if source == ":rainbow[ECHA]":
     echastuff = pd.read_excel('echastuff.xlsx')

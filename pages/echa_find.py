@@ -9,19 +9,6 @@ import re as standardre
 
 
 # Lista delle sostanza testate
-substances = [
-'Carbamic acid ester',
-'Isooctane',
-'Cyanoguanidine',
-'Propyl acetate', # Da sta sostanza si può notare come il sito dell'ECHA sia molto piu' aggiornato dei dati da 10gb
-'AZODICARBOXYLIC DIMORPHOLIDE', # Sostanza senza dossiers attivi. Ne ha uno inattivo ma è vecchissimo e con status 'No longer valid'.
-'(-) Vince Lactam', #Sostanza con un dossier attivo ma senza riassunti tossicologici.
-'(+)-tartaric acid' #Active dossiers. Summary tossicologico senza NOAEL. 
-                                #Acute toxicity con LD50. Al momento non va per la conversione del testo.
-]
-
-selection = st.selectbox('Substance test', options=substances, index=None)
-
 
 def search_dossier(substance):
         # Prima parte. Ottengo rmlID e rmlName
@@ -103,15 +90,6 @@ def search_dossier(substance):
             return final_url
         else:
             return False
-
-if selection:
-    substance = selection
-    final_url = search_dossier(substance)
-    if final_url:
-        st.page_link(label='Riassunto tossicologico completo sul sito ECHA', page=final_url)
-        summary_content = requests.get(final_url).text
-        echa_pandas(summary_content)
-
 
 
 
