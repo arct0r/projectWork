@@ -20,7 +20,6 @@ dossier_path = 'C:/Users/PierluigiDurante/OneDrive - ITS Angelo Rizzoli/Desktop/
 
 # Dato un link di CIR questa funzione restituisce una tabella con le informazioni e i link ai pdf
 def getDF(link):
-    link = 'https://cir-reports.cir-safety.org/cir-ingredient-status-report/?id=b77dee6a-9067-4aea-9f68-d6b4e31c3523'
     page_ref = rq.get(link)
     page_soup = bs(page_ref.text, 'html.parser')
     
