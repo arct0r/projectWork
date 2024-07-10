@@ -2,6 +2,7 @@ import streamlit as st
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
+st.set_page_config(layout="wide")
 
 # Il problema dei riassunti tossicologici (e di questo progetto in generale) è che risulta inutile estrarre numeri a caso riguardanti il NOAEL
 # senza avere tutto il contesto intorno. 
@@ -48,9 +49,8 @@ sections_and_subsections = {}
 
 # Le classi sul sito echa hanno id di questo tipo: 'das-block GeneralPopulationHazardViaDermalRoute'. Quindi trasformo la mia summ per renderla come gli id.
 id_sections = ['das-block '+section.replace(' ', '').replace('-', '') for section in main_sections]
-id_sections
 
-with open("testpagesummary3.html") as summary:
+with open("testpagesummary.html") as summary:
     summary = summary.read()
     soup = BeautifulSoup(summary)
     soup.prettify()
@@ -128,6 +128,8 @@ with st.expander('Tree Full'):
 
 def divs_to_df (divtitle, inner_divs, subsection):
 # Questa è la parte in cui la complessità diventa tale che smetto di capirci qualcosa e vado ad istinto
+# Essenzialmente ho una sfilza di divs rotti e mal formattati da trasformare in dataframes di panda. 
+
     inner_divs = [value.text.lstrip().rstrip() for value in inner_divs if value.text.lstrip().rstrip() != '']
     values_corrected = []
     skip = None
@@ -172,16 +174,34 @@ def divs_to_df (divtitle, inner_divs, subsection):
                 # Se sono presenti molti spazi vuoti vuol dire che sto avendo a che fare con un div che in realtà ha due divs. Quindi faccio due append separati.
             else:
                 values_corrected.append(div)
-    divtitle
-    values_corrected
+
+    # Ora che ho tutti i valori in values_corrected creo un dataframe di pandas 
+    df_base = pd.DataFrame({'Description':[], 'Value':[]})
+    for i in range(0, len(values_corrected), 2):
+        if values_corrected[i+1] not in ['[Empty]', '[Not publishable]', 'no hazard identified'] and values_corrected[i]!=values_corrected[i+1]:
+            df_base = df_base._append({'Description':values_corrected[i],'Value':values_corrected[i+1]}, ignore_index=True)
+    df_base = df_base.drop_duplicates()   
+    if not df_base.empty:
+        divtitle
+        df_base
+    # La fine della sofferenza. Printo il titolo del dataframe e il dataframe solo se non sono vuoti.
+    
+    
 
 with st.expander('Final'):
     for subsection in tree_full:
         # Workers x2, Hazard x3
         st.subheader(subsection)
-        '**Systemic Effects**'
         systemic = tree_full[subsection]['Systemic Effects']
+
+        local = tree_full[subsection]['Local Effects']
+        '**Systemic Effects**'
         for sub_sub in systemic:
+            title = sub_sub.find('h3').text
+            inner_divs = sub_sub.find_all('div')
+            divs_to_df(title, inner_divs, subsection)
+        '**Local Effects**'
+        for sub_sub in local:
             title = sub_sub.find('h3').text
             inner_divs = sub_sub.find_all('div')
             divs_to_df(title, inner_divs, subsection)
