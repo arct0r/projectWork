@@ -124,7 +124,7 @@ elif source ==':blue[CIR]':
         qq = 'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti, poi creami una tabella coi valori trovati. Se non li trovi, restituisci solo il testo: "VALORI NON TROVATI"\n'
         confirm = st.button(label='Ask gemini')
         prompt = f"{qq} : \n {dossier_text}"
-        if confirm:
+        if confirm: 
             response = model.generate_content(prompt)
             response.text
         
