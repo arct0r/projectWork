@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import streamlit.components.v1 as components
 import urllib.parse
 import lxml
-from pages.echa_summary import echa_pandas
+from echa_summary import echa_pandas
 import re as standardre
 
 
@@ -16,9 +16,13 @@ def search_dossier(substance):
         req_0 = requests.get('https://chem.echa.europa.eu/api-substance/v1/substance?pageIndex=1&pageSize=100&searchText='+urllib.parse.quote(substance))
         #'La prima cosa da fare è fare una ricerca con il nome della sostanza ma trasformata attraverso urllib'
         req_0_json = req_0.json()
+        try:
         #req_0_json
-        rmlId = req_0_json['items'][0]['substanceIndex']['rmlId']
-        rmlName= req_0_json['items'][0]['substanceIndex']['rmlName']
+            rmlId = req_0_json['items'][0]['substanceIndex']['rmlId']
+            rmlName= req_0_json['items'][0]['substanceIndex']['rmlName']
+        except:
+            st.error('La sostanza selezionata non contiene riassunti tossicologici.')
+            return False
         #'rmlId: ' + rmlId
         #'rmlName: '+rmlName
 
@@ -70,14 +74,24 @@ def search_dossier(substance):
 
         #print(type(re.search('href="([^"]+)"', str_div)).__name__)
         if type(standardre.search('href="([^"]+)"', str_div)).__name__ == 'NoneType':
-            ":red[Haven't found any toxicological summary for the given substance.]"
+            st.error('Non esistono riassunti tossicologici per questa sostanza.')
             return False
             st.stop()
 
         UIC = standardre.search('href="([^"]+)"', str_div).group(1)
-        #'IUC: \n'
-        #UIC
-        #
+
+        div_acute_toxicity = index.find_all('div', id = ['id_72_AcuteToxicity'])
+        if div_acute_toxicity:
+            for div in div_acute_toxicity:
+                a = div.find_all('a', href=True)[0]
+                #print('Quack')
+                acute_toxicity_id = standardre.search('href="([^"]+)"', str(a)).group(1)
+                #print(acute_toxicity_link)
+
+
+
+            #uic_acute_toxicity = div_acute_toxicity.find_all('a', {'rel':'host'}).href
+        #print(uic_acute_toxicity)
 
     #index
 
@@ -86,6 +100,13 @@ def search_dossier(substance):
         final_url = 'https://chem.echa.europa.eu/html-pages/'+ assetExternalId + '/documents/' + UIC + '.html'
         #final_url
                 
+        if acute_toxicity_id:
+            acute_toxicity_link = 'https://chem.echa.europa.eu/html-pages/'+ assetExternalId + '/documents/' + acute_toxicity_id + '.html'
+            # ora serve il metodo che mi interpreti l'
+            print('Acute toxicity link:')
+            print(acute_toxicity_link)
+            pass
+
         if final_url:
             return final_url
         else:

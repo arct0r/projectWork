@@ -2,6 +2,7 @@ import streamlit as st
 from bs4 import BeautifulSoup
 import pandas as pd
 import re as standardre
+import sys
 
 # Il problema dei riassunti tossicologici (e di questo progetto in generale) è che risulta inutile estrarre numeri a caso riguardanti il NOAEL
 # senza avere tutto il contesto intorno. 
@@ -124,14 +125,14 @@ def echa_pandas(summary_content):
                 if ('\n' or '\t') in div:
                     div = div.replace('\n', '     ')
                     div = div.replace('\t', '     ')
+                    div = div.replace('other:', '     ')
                     # Cambio \n e \t con spazi vuoti
                 if '  ' in div:
                     inner_divs = div.split('     ')
                     if inner_divs[0] != '' and inner_divs[-1] != '' and  inner_divs[-2] != '':
                     # sta condizione serve quando ho situazioni di questo tipo:
                     #inner_div: ['Value', '', '', '', '', '', '2.4', ' mg/kg bw/day']
-                        #f'Debugging. inner_divs[0] = {inner_divs[0]}, inner_divs[-2] = {inner_divs[-2]}, inner_divs[-1] = {inner_divs[-1]}'
-                        print("Found similiar 0 and -2:" ,inner_divs[0], " | ",  inner_divs[-2] , " | ", inner_divs[-1])
+                        #print("Found similiar 0 and -2:" ,inner_divs[0], " | ",  inner_divs[-2] , " | ", inner_divs[-1])
                         if inner_divs[0] != inner_divs[-2]:
                             values_corrected.append(inner_divs[0].rstrip().lstrip())
                             values_corrected.append(inner_divs[-2].lstrip() + inner_divs[-1].rstrip())
@@ -153,11 +154,14 @@ def echa_pandas(summary_content):
         # Ora che ho tutti i valori in values_corrected creo un dataframe di pandas 
         df_base = pd.DataFrame({'Description':[], 'Value':[]})
         for i in range(0, len(values_corrected), 2):
-            if values_corrected[i+1] not in ['[Empty]', '[Not publishable]', 'no hazard identified'] and values_corrected[i]!=values_corrected[i+1]:
-                df_base = df_base._append({'Description':values_corrected[i],'Value':values_corrected[i+1]}, ignore_index=True)
+            try:
+                if values_corrected[i+1] not in ['[Empty]', '[Not publishable]', 'no hazard identified'] and values_corrected[i]!=values_corrected[i+1]:
+                    df_base = df_base._append({'Description':values_corrected[i],'Value':values_corrected[i+1]}, ignore_index=True)
+            except:
+                print('Out of range while making dataframes')
         df_base = df_base.drop_duplicates()   
         if not df_base.empty:
-            st.write(f":orange[**{effects}**]: {divtitle}")
+            st.write(f"{effects}: {divtitle}")
             st.dataframe(df_base, use_container_width=True)
         else:
             return False
@@ -169,24 +173,19 @@ def echa_pandas(summary_content):
             # Workers x2, Hazard x3
             with st.expander(subsection, expanded=True):
                 systemic = tree_full[subsection]['Systemic Effects']
-
                 local = tree_full[subsection]['Local Effects']
-                effects = '**Systemic Effects**'
 
+                effects = ':orange[**Systemic Effects**]'
                 for sub_sub in systemic:
                     title = sub_sub.find('h3').text
                     inner_divs = sub_sub.find_all('div')
                     divs_to_df(effects, title, inner_divs, subsection)
 
-
-
-                effects = '**Systemic Effects**'
+                effects = ':green[**Local Effects**]'
                 for sub_sub in local:
                     title = sub_sub.find('h3').text
                     inner_divs = sub_sub.find_all('div')
                     divs_to_df(effects, title, inner_divs, subsection)
 
 
-#with open('testpagesummary3.html', 'r') as summary:
-#    echa_pandas(summary)
 

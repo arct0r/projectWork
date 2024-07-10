@@ -5,8 +5,8 @@ import requests as rq
 from scraping import getDF, get_pdf_content
 import google.generativeai as genai
 import time 
-from pages.echa_find import search_dossier
-from pages.echa_summary import echa_pandas
+from echa_find import search_dossier
+from echa_summary import echa_pandas
 import re as standardre
 
 
