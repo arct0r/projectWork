@@ -49,7 +49,7 @@ sections_and_subsections = {}
 # Le classi sul sito echa hanno id di questo tipo: 'das-block GeneralPopulationHazardViaDermalRoute'. Quindi trasformo la mia summ per renderla come gli id.
 id_sections = ['das-block '+section.replace(' ', '').replace('-', '') for section in main_sections]
 
-with open("testpagesummary4.html") as summary:
+with open("testpagesummary3.html") as summary:
     summary = summary.read()
     soup = BeautifulSoup(summary)
     soup.prettify()
