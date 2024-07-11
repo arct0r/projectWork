@@ -39,8 +39,8 @@ if source == ":rainbow[ECHA]":
                 with col2:
                     if st.session_state['AcuteToxicity']!=None:
                         st.page_link(label=':violet[**Acute Toxicity**, scheda completa sul sito ECHA]', page=st.session_state['AcuteToxicity'])
-
-                acute_toxicity_to_pandas()
+                if st.session_state['AcuteToxicity']!=None:
+                    acute_toxicity_to_pandas()
                 summary_content = rq.get(final_url).text
                 echa_pandas(summary_content)
 

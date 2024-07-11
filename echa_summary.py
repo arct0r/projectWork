@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import re as standardre
 import sys
+import requests as rq
 
 # Il problema dei riassunti tossicologici (e di questo progetto in generale) è che risulta inutile estrarre numeri a caso riguardanti il NOAEL
 # senza avere tutto il contesto intorno. 
@@ -106,6 +107,8 @@ def echa_pandas(summary_content):
     # Questa è la parte in cui la complessità diventa tale che smetto di capirci qualcosa e vado ad istinto
     # Essenzialmente ho una sfilza di divs rotti e mal formattati da trasformare in dataframes di panda. 
 
+        right_values = ['5','4','3','2', '1', '[Not publishable]', 'No remaining uncertainties.', '[Empty]', 'Default value for workers according to ECHA REACH Guidance.','The available studies are pre/GLP and non-guideline studies.', ]
+
         inner_divs = [value.text.lstrip().rstrip() for value in inner_divs if value.text.lstrip().rstrip() != '']
         values_corrected = []
         skip = None
@@ -129,25 +132,28 @@ def echa_pandas(summary_content):
                     # Cambio \n e \t con spazi vuoti
                 if '  ' in div:
                     inner_divs = div.split('     ')
-                    if inner_divs[0] != '' and inner_divs[-1] != '' and  inner_divs[-2] != '':
-                    # sta condizione serve quando ho situazioni di questo tipo:
-                    #inner_div: ['Value', '', '', '', '', '', '2.4', ' mg/kg bw/day']
-                        #print("Found similiar 0 and -2:" ,inner_divs[0], " | ",  inner_divs[-2] , " | ", inner_divs[-1])
-                        if inner_divs[0] != inner_divs[-2]:
-                            values_corrected.append(inner_divs[0].rstrip().lstrip())
-                            values_corrected.append(inner_divs[-2].lstrip() + inner_divs[-1].rstrip())
-                            #f":green[Appended left: **{inner_divs[0].rstrip().lstrip()}** | right: **{inner_divs[-2].lstrip() + inner_divs[-1].rstrip()}**]"
-                            skip = True
-                            # Questo flag serve a far skippare il prossimo div. Non comprenderò questo codice tra qualche minuto
-                        #else:
-                            #print('Trap!')
-                            #f":red[------------- That's a trap! I'm not appending '{inner_divs[0]} and '{inner_divs[-2]} and '{inner_divs[-1]}']"
-                            #f":red[inner_divs: {inner_divs}]"   
-                    else:
-                        if inner_divs[0] != inner_divs[-2]:
-                            values_corrected.append(inner_divs[0].rstrip().lstrip())
-                            values_corrected.append(inner_divs[-1].rstrip().lstrip())
+                    try:
+                        if inner_divs[0] != '' and inner_divs[-1] != '' and  inner_divs[-2] != '':
+                        # sta condizione serve quando ho situazioni di questo tipo:
+                        #inner_div: ['Value', '', '', '', '', '', '2.4', ' mg/kg bw/day']
+                            #print("Found similiar 0 and -2:" ,inner_divs[0], " | ",  inner_divs[-2] , " | ", inner_divs[-1])
+                            if inner_divs[0] != inner_divs[-2] and inner_divs[0] not in right_values:
+                                values_corrected.append(inner_divs[0].rstrip().lstrip())
+                                values_corrected.append(inner_divs[-2].lstrip() + inner_divs[-1].rstrip())
+                                #f":green[Appended left: **{inner_divs[0].rstrip().lstrip()}** | right: **{inner_divs[-2].lstrip() + inner_divs[-1].rstrip()}**]"
+                                skip = True
+                                # Questo flag serve a far skippare il prossimo div. Non comprenderò questo codice tra qualche minuto
+                            #else:
+                                #print('Trap!')
+                                #f":red[------------- That's a trap! I'm not appending '{inner_divs[0]} and '{inner_divs[-2]} and '{inner_divs[-1]}']"
+                                #f":red[inner_divs: {inner_divs}]"   
+                        else:
+                            if inner_divs[0] != inner_divs[-2] and inner_divs[0] not in right_values:
+                                values_corrected.append(inner_divs[0].rstrip().lstrip())
+                                values_corrected.append(inner_divs[-1].rstrip().lstrip())
                     # Se sono presenti molti spazi vuoti vuol dire che sto avendo a che fare con un div che in realtà ha due divs. Quindi faccio due append separati.
+                    except:
+                        print('Out of range while correcting values')
                 else:
                     values_corrected.append(div)
 
@@ -155,11 +161,16 @@ def echa_pandas(summary_content):
         df_base = pd.DataFrame({'Description':[], 'Value':[]})
         for i in range(0, len(values_corrected), 2):
             try:
-                if values_corrected[i+1] not in ['[Empty]', '[Not publishable]', 'no hazard identified'] and values_corrected[i]!=values_corrected[i+1]:
+                if values_corrected[i] not in right_values and values_corrected[i]!=values_corrected[i+1]:
                     df_base = df_base._append({'Description':values_corrected[i],'Value':values_corrected[i+1]}, ignore_index=True)
             except:
                 print('Out of range while making dataframes')
         df_base = df_base.drop_duplicates()   
+        df_base = df_base[~df_base['Description'].isin(right_values)]
+        df_base = df_base[~df_base['Value'].isin(['[Empty]', '[Not publishable]', 'Justification', 'AF for dose response relationship', 'AF for intraspecies differences', 'AF for other interspecies differences', 'AF for interspecies differences (allometric scaling)', 'AF for differences in duration of exposure'])]
+        #df = df.loc[df['sex']=='Male']
+        #df[~df['column_name'].isin(values_list)]
+
         if not df_base.empty:
             st.write(f"{effects}: {divtitle}")
             st.dataframe(df_base, use_container_width=True)
@@ -191,5 +202,29 @@ def echa_pandas(summary_content):
 def acute_toxicity_to_pandas():
     # Questo metodo serve solo a processare le pagine di 'Acute Toxicity', se sono presenti.
     with st.expander('Acute toxicity'):
-        st.write('Quack')
-
+        acute_tox_link = st.session_state['AcuteToxicity']
+        page = rq.get(acute_tox_link)
+        soup = BeautifulSoup(page.text, 'html.parser')
+        soup.prettify()
+        
+        body = soup.find(class_ = 'das-document ENDPOINT_SUMMARY AcuteToxicity')
+        print('---------------------------------- BODY ----------------------------------')
+        print(body)
+        key_information = body.find('section', class_='das-block KeyInformation')
+        print('---------------------------------- KEY INFO ----------------------------------')
+        print(key_information)
+        try:
+            key_info = key_information.find('div', class_='das-field_value das-field_value_html')
+        except:
+            print('Cant find divs for Acute Toxicity Summaries')
+            return False
+        #key_info = [p.text.strip() for p in key_info_p if p.text.strip() != '']
+        if key_info.find_all('p'):
+            st.write(':red[**Summary:**] ')
+            for info in key_info.find_all('p'):
+                st.write(info.text)
+        else:
+            st.write(':red[**Summary:**] ')
+            for info in key_info.text.split('.'):
+                st.write(info)
+            print(key_info)
