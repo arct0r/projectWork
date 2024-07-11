@@ -69,7 +69,7 @@ elif source ==':blue[CIR]':
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         # domanda = st.text_area(label='Type your input here')
-        qq = f'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti per l\'ingrediente {substance}, poi creami una tabella coi valori trovati. Se non esiste il valore per la sostanza, restituisci "VALORI NON TROVATI"\n'
+        qq = f'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti solo per l\'ingrediente {substance}, poi creami una tabella coi valori trovati. Se non esiste il valore per la sostanza, restituisci "VALORI NON TROVATI"\n'
         confirm = st.button(label='Ask gemini')
         prompt = f"{qq} : \n {dossier_text}"
         if confirm: 
