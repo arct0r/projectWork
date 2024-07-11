@@ -23,9 +23,41 @@ with col2:
     
 ############################################
 
+st.session_state['sections'] = ['Workers - Hazard via inhalation route',
+        'Workers - Hazard via dermal route',
+        'General Population - Hazard via inhalation route',
+        'General Population - Hazard via dermal route',
+        'General Population - Hazard via oral route',
+        'Acute Toxicity'
+    ]
 if source == ':rainbow[ECHA]':
     echastuff = pd.read_excel('echastuff.xlsx')
-    echa_substance_select = st.selectbox(label = "Inserisci il nome della sostanza che vuoi cercare:", options=echastuff['Substance'], index=None)
+    col7,col8 = st.columns([9,1])
+    with col7:
+        echa_substance_select = st.selectbox(label = "Inserisci il nome della sostanza che vuoi cercare:", options=echastuff['Substance'], index=None)
+    with col8:
+        st.markdown("<div style='width: 1px; height: 29px'></div>", unsafe_allow_html=True)
+        with st.popover('⚙️'):
+            'Mostra le seguenti sezioni'
+            acute_toxicity_toggle = st.checkbox(label='Acute Toxicity',value=True)
+            workers_dermal = st.checkbox(label='Workers - Hazard via dermal route',value=True)
+            workers_inhalation = st.checkbox(label='Workers - Hazard via inhalation route',value=True)
+            population_inhalation = st.checkbox(label='General Population - Hazard via inhalation route',value=True)
+            population_dermal = st.checkbox(label='General Population - Hazard via dermal route',value=True)
+            population_oral = st.checkbox(label='General Population - Hazard via oral route',value=True)
+            if not acute_toxicity_toggle:
+                st.session_state['sections'].remove('Acute Toxicity')
+            if not workers_dermal:
+                st.session_state['sections'].remove('Workers - Hazard via dermal route')
+            if not workers_inhalation:
+                st.session_state['sections'].remove('Workers - Hazard via inhalation route')
+            if not population_inhalation:
+                st.session_state['sections'].remove('General Population - Hazard via inhalation route')
+            if not population_dermal:
+                st.session_state['sections'].remove('General Population - Hazard via dermal route')
+            if not population_oral:
+                st.session_state['sections'].remove('General Population - Hazard via oral route')
+
     if not echa_substance_select:
         echastuff
     # Se schiaccio una sostanza echa dal multiselect

@@ -182,49 +182,53 @@ def echa_pandas(summary_content):
 
     for subsection in tree_full:
             # Workers x2, Hazard x3
-            with st.expander(subsection, expanded=True):
-                systemic = tree_full[subsection]['Systemic Effects']
-                local = tree_full[subsection]['Local Effects']
+            if subsection in st.session_state['sections']:
+            # Occhio! Questo è per i filtri.
 
-                effects = ':orange[**Systemic Effects**]'
-                for sub_sub in systemic:
-                    title = sub_sub.find('h3').text
-                    inner_divs = sub_sub.find_all('div')
-                    divs_to_df(effects, title, inner_divs, subsection)
+                with st.expander(subsection, expanded=True):
+                    systemic = tree_full[subsection]['Systemic Effects']
+                    local = tree_full[subsection]['Local Effects']
 
-                effects = ':green[**Local Effects**]'
-                for sub_sub in local:
-                    title = sub_sub.find('h3').text
-                    inner_divs = sub_sub.find_all('div')
-                    divs_to_df(effects, title, inner_divs, subsection)
+                    effects = ':orange[**Systemic Effects**]'
+                    for sub_sub in systemic:
+                        title = sub_sub.find('h3').text
+                        inner_divs = sub_sub.find_all('div')
+                        divs_to_df(effects, title, inner_divs, subsection)
+
+                    effects = ':green[**Local Effects**]'
+                    for sub_sub in local:
+                        title = sub_sub.find('h3').text
+                        inner_divs = sub_sub.find_all('div')
+                        divs_to_df(effects, title, inner_divs, subsection)
 
 
 def acute_toxicity_to_pandas():
     # Questo metodo serve solo a processare le pagine di 'Acute Toxicity', se sono presenti.
-    with st.expander('Acute toxicity', expanded=True):
-        acute_tox_link = st.session_state['AcuteToxicity']
-        page = rq.get(acute_tox_link)
-        soup = BeautifulSoup(page.text, 'html.parser')
-        soup.prettify()
-        
-        body = soup.find(class_ = 'das-document ENDPOINT_SUMMARY AcuteToxicity')
-        print('---------------------------------- BODY ----------------------------------')
-        print(body)
-        key_information = body.find('section', class_='das-block KeyInformation')
-        print('---------------------------------- KEY INFO ----------------------------------')
-        print(key_information)
-        try:
-            key_info = key_information.find('div', class_='das-field_value das-field_value_html')
-        except:
-            print('Cant find divs for Acute Toxicity Summaries')
-            return False
-        #key_info = [p.text.strip() for p in key_info_p if p.text.strip() != '']
-        if key_info.find_all('p'):
-            st.write(':red[**Summary:**] ')
-            for info in key_info.find_all('p'):
-                st.write(info.text)
-        else:
-            st.write(':red[**Summary:**] ')
-            for info in key_info.text.split('.'):
-                st.write(info)
-            print(key_info)
+    if 'Acute Toxicity' in st.session_state['sections']:
+        with st.expander('Acute toxicity', expanded=True):
+            acute_tox_link = st.session_state['AcuteToxicity']
+            page = rq.get(acute_tox_link)
+            soup = BeautifulSoup(page.text, 'html.parser')
+            soup.prettify()
+            
+            body = soup.find(class_ = 'das-document ENDPOINT_SUMMARY AcuteToxicity')
+            print('---------------------------------- BODY ----------------------------------')
+            print(body)
+            key_information = body.find('section', class_='das-block KeyInformation')
+            print('---------------------------------- KEY INFO ----------------------------------')
+            print(key_information)
+            try:
+                key_info = key_information.find('div', class_='das-field_value das-field_value_html')
+            except:
+                print('Cant find divs for Acute Toxicity Summaries')
+                return False
+            #key_info = [p.text.strip() for p in key_info_p if p.text.strip() != '']
+            if key_info.find_all('p'):
+                st.write(':red[**Summary:**] ')
+                for info in key_info.find_all('p'):
+                    st.write(info.text)
+            else:
+                st.write(':red[**Summary:**] ')
+                for info in key_info.text.split('.'):
+                    st.write(info)
+                print(key_info)
