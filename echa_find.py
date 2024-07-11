@@ -105,6 +105,8 @@ def search_dossier(substance):
             # ora serve il metodo che mi interpreti l'
             print('Acute toxicity link:')
             print(acute_toxicity_link)
+            st.page_link(label=':violet[**Acute Toxicity, riassunto completo sul sito ECHA**]', page=acute_toxicity_link)
+
             pass
 
         if final_url:
