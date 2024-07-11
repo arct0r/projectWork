@@ -56,6 +56,7 @@ with cir_tab:
         result = csv.loc[csv['Ingredienti'] == substance]
         link = result.iloc[0]['Link']  
         table = getDF(link)
+        table
         all_links = table['Links'].to_list()
         dossier_text = ''
         for i in range(len(all_links)):
@@ -64,13 +65,12 @@ with cir_tab:
                 break
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
-        # domanda = st.text_area(label='Type your input here')
-        qq = f'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti solo per l\'ingrediente {substance}, poi creami una tabella coi valori trovati. Se non esiste il valore per la sostanza, restituisci "VALORI NON TROVATI"\n'
-        confirm = st.button(label='Ask gemini')
+        qq = f'Leggi questo testo e trova i valori di NOAEL e di LD50 presenti SOLO E SOLTANTO per la sostanza {substance}, poi creami una tabella coi valori trovati. Se non esiste il valore per la sostanza, restituisci "VALORI NON TROVATI"\n'
+        #confirm = st.button(label='Ask gemini')
         prompt = f"{qq} : \n {dossier_text}"
-        if confirm: 
-            response = model.generate_content(prompt)
-            response.text    
+        #if confirm: 
+        response = model.generate_content(prompt)
+        response.text    
     else:
         csv
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
