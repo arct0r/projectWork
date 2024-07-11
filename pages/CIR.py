@@ -13,36 +13,24 @@ from pubtest import pubchem_stuff
 
 
 
-st.title('👩🏻‍🔬 Substance Surfer')
+#### HEADER ################################
+col1,col2 = st.columns([6,4])
+with col1:
+    st.title('👩🏻‍🔬 Substance Surfer')
+with col2:
+    source = st.radio(
+            "",
+            options=[":rainbow[ECHA]",":violet[**PubChem**]", ":blue[CIR]"],
+            captions = ["LD50", "NOAEL", "Misto"], horizontal=True, index=2)
+    
+############################################
 
-pubchem_tab, echa_tab, cir_tab  = st.tabs([":violet[**PubChem**]", ":rainbow[**ECHA**]", ":blue[**CIR**]"])
-
-with echa_tab:
-    echastuff = pd.read_excel('echastuff.xlsx')
-    echa_substance_select = st.selectbox(label = "Inserisci il nome della sostanza che vuoi cercare:", options=echastuff['Substance'], index=None)
-    if not echa_substance_select:
-        echastuff
-    # Se schiaccio una sostanza echa dal multiselect
-    if echa_substance_select:
-            st.session_state['AcuteToxicity'] = None
-            substance = echa_substance_select
-            final_url = search_dossier(substance)
-            if final_url:
-                col1,col2 = st.columns(2)
-                with col1:
-                    st.page_link(label=':blue[**Riassunto tossicologico** completo sul sito ECHA]', page=final_url)
-            if st.session_state['AcuteToxicity']!=None:
-                with col2:
-                    'Quack'
-                    #st.page_link(label=':violet[**Acute Toxicity**, scheda completa sul sito ECHA]', page=st.session_state['AcuteToxicity'])
-                if st.session_state['AcuteToxicity']!=None:
-                    acute_toxicity_to_pandas()
-                summary_content = rq.get(final_url).text
-                echa_pandas(summary_content)
+if source == ':rainbow[ECHA]':
+    st.switch_page('Echa.py')
 
 
 
-with cir_tab:
+if source == ":blue[CIR]":
     with open("cir-reports.csv") as tab:
         csv = pd.read_csv(tab, names=['Ingredienti', 'INCI Nome', 'Link'])
 
@@ -85,22 +73,5 @@ with cir_tab:
         #    response.text
         
 
-with pubchem_tab:
-    value = st_keyup("Inserisci il nome o le iniziali della sostanza", key='Sostanza' )
-    # Notice that value updates after every key press
-    pubchem_csv = pd.read_csv('pubchem.csv')
-    tall_table = st.checkbox(label='Riduci altezza tabella', key='2993')
-    val = 300 if not tall_table else 100
-    pubchem_subs = st.dataframe(pubchem_csv[pubchem_csv['substances'].str.contains(value, case=False, na=False)]['substances'], height=val, use_container_width=True, on_select="rerun", selection_mode="multi-row",hide_index=True, key='3030')
-
-    df_select = pubchem_subs.selection.rows
-
-
-    if df_select:
-        for i in df_select[:4]:
-                st.subheader(pubchem_csv['substances'].iloc[i])
-                cid = pubchem_csv['cid'].iloc[i]
-                acuteTox, summaryLink = pubchem_stuff(cid)
-                st.page_link(label=':blue[**Link del riassunto completo**]',page=summaryLink)
-                st.dataframe(acuteTox, hide_index=True)
-                st.divider()
+if source == ":violet[**PubChem**]":
+    st.switch_page('pages\PubChem.py')
