@@ -12,20 +12,13 @@ from st_keyup import st_keyup
 from pubtest import pubchem_stuff
 
 
-col1, col2 = st.columns([6,4])
-with col1:
-    st.title('👩🏻‍🔬 SubstanceSurfer')
 
-with col2:
-    #Bottone
-    source = st.radio(
-        "",
-        options=[":violet[**PubChem**]",":rainbow[ECHA]", ":blue[CIR]"],
-        captions = ["LD50", "NOAEL", "Misto"], horizontal=True, index=1)
+st.title('👩🏻‍🔬 Substance Surfer')
 
-if source == ":rainbow[ECHA]":
+pubchem_tab, echa_tab, cir_tab  = st.tabs([":violet[**PubChem**]", ":rainbow[**ECHA**]", ":blue[**CIR**]"])
+
+with echa_tab:
     echastuff = pd.read_excel('echastuff.xlsx')
-    
     echa_substance_select = st.selectbox(label = "Inserisci il nome della sostanza che vuoi cercare:", options=echastuff['Substance'], index=None)
     if not echa_substance_select:
         echastuff
@@ -38,9 +31,10 @@ if source == ":rainbow[ECHA]":
                 col1,col2 = st.columns(2)
                 with col1:
                     st.page_link(label=':blue[**Riassunto tossicologico** completo sul sito ECHA]', page=final_url)
+            if st.session_state['AcuteToxicity']!=None:
                 with col2:
-                    if st.session_state['AcuteToxicity']!=None:
-                        st.page_link(label=':violet[**Acute Toxicity**, scheda completa sul sito ECHA]', page=st.session_state['AcuteToxicity'])
+                    'Quack'
+                    #st.page_link(label=':violet[**Acute Toxicity**, scheda completa sul sito ECHA]', page=st.session_state['AcuteToxicity'])
                 if st.session_state['AcuteToxicity']!=None:
                     acute_toxicity_to_pandas()
                 summary_content = rq.get(final_url).text
@@ -48,7 +42,7 @@ if source == ":rainbow[ECHA]":
 
 
 
-elif source ==':blue[CIR]':
+with cir_tab:
     with open("cir-reports.csv") as tab:
         csv = pd.read_csv(tab, names=['Ingredienti', 'INCI Nome', 'Link'])
 
@@ -89,7 +83,8 @@ elif source ==':blue[CIR]':
         if confirm:
             response = model.generate_content(f"{qq} : \n {file.text}")
             response.text
-elif source==":violet[**PubChem**]":
+
+with pubchem_tab:
     value = st_keyup("Inserisci il nome o le iniziali della sostanza", key='Sostanza' )
     # Notice that value updates after every key press
     pubchem_csv = pd.read_csv('pubchem.csv')

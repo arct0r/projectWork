@@ -13,26 +13,3 @@ def pubchem_stuff(cid):
             csv = BytesIO(csv_byte)
             csv_df = pd.read_csv(csv, sep=',')
             return [csv_df, SummaryLink]
-
-c1,c2,c3 = st.columns(3)
-with c2:
-    st.image('images\pubchem.png', width =200)
-value = st_keyup("Inserisci il nome o le iniziali della sostanza", key='' )
-
-# Notice that value updates after every key press
-pubchem_csv = pd.read_csv('pubchem.csv')
-tall_table = st.checkbox('Riduci altezza tabella')
-val = 300 if not tall_table else 100
-pubchem_subs = st.dataframe(pubchem_csv[pubchem_csv['substances'].str.contains(value, case=False, na=False)]['substances'], height=val, use_container_width=True, on_select="rerun", selection_mode="multi-row",hide_index=True)
-
-df_select = pubchem_subs.selection.rows
-
-
-if df_select:
-    for i in df_select[:4]:
-            st.subheader(pubchem_csv['substances'].iloc[i])
-            cid = pubchem_csv['cid'].iloc[i]
-            acuteTox, summaryLink = pubchem_stuff(cid)
-            st.page_link(label=':blue[**Link del riassunto completo**]',page=summaryLink)
-            st.dataframe(acuteTox, hide_index=True)
-            st.divider()
