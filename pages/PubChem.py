@@ -20,7 +20,7 @@ with col2:
     source = st.radio(
             "",
             options=[":rainbow[ECHA]",":violet[**PubChem**]", ":blue[CIR]"],
-            captions = ["LD50", "NOAEL", "Misto"], horizontal=True, index=0)
+            captions = ["LD50", "NOAEL", "Misto"], horizontal=True, index=1)
 ############################################
 
 if source == ':rainbow[ECHA]':

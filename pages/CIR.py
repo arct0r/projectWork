@@ -11,8 +11,6 @@ import re as standardre
 from st_keyup import st_keyup
 from pubtest import pubchem_stuff
 
-
-
 #### HEADER ################################
 col1,col2 = st.columns([5,5])
 with col1:
@@ -21,7 +19,7 @@ with col2:
     source = st.radio(
             "",
             options=[":rainbow[ECHA]",":violet[**PubChem**]", ":blue[CIR]"],
-            captions = ["LD50", "NOAEL", "Misto"], horizontal=True, index=0)
+            captions = ["LD50", "NOAEL", "Misto"], horizontal=True, index=2)
 ############################################
 
 if source == ':rainbow[ECHA]':
