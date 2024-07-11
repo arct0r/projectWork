@@ -13,15 +13,14 @@ from pubtest import pubchem_stuff
 
 
 #### HEADER ################################
-col1,col2 = st.columns([6,4])
+col1,col2 = st.columns([5,5])
 with col1:
-    st.title('👩🏻‍🔬 Substance Surfer')
+    st.title('👩🏻‍🔬 :red[Tox]*F!nder*')
 with col2:
     source = st.radio(
             "",
             options=[":rainbow[ECHA]",":violet[**PubChem**]", ":blue[CIR]"],
-            captions = ["LD50", "NOAEL", "Misto"], horizontal=True, index=1)
-    
+            captions = ["LD50", "NOAEL", "Misto"], horizontal=True, index=0)
 ############################################
 
 if source == ':rainbow[ECHA]':
