@@ -4,9 +4,8 @@ from bs4 import BeautifulSoup
 import streamlit.components.v1 as components
 import urllib.parse
 import lxml
-from echa_summary import echa_pandas
+from echa_summary import echa_pandas, acute_toxicity_to_pandas
 import re as standardre
-
 
 # Lista delle sostanza testate
 
@@ -105,10 +104,8 @@ def search_dossier(substance):
             # ora serve il metodo che mi interpreti l'
             print('Acute toxicity link:')
             print(acute_toxicity_link)
-            st.page_link(label=':violet[**Acute Toxicity, riassunto completo sul sito ECHA**]', page=acute_toxicity_link)
-
-            pass
-
+            st.page_link(label=':violet[**Acute Toxicity**, scheda completa sul sito ECHA]', page=acute_toxicity_link)
+            st.session_state['AcuteToxicity'] = acute_toxicity_link
         if final_url:
             return final_url
         else:

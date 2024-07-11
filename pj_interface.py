@@ -6,7 +6,7 @@ from scraping import getDF, get_pdf_content
 import google.generativeai as genai
 import time 
 from echa_find import search_dossier
-from echa_summary import echa_pandas
+from echa_summary import echa_pandas, acute_toxicity_to_pandas
 import re as standardre
 
 
@@ -28,13 +28,24 @@ if source == ":rainbow[ECHA]":
     if not echa_substance_select:
         echastuff
     # Se schiaccio una sostanza echa dal multiselect
-    if echa_substance_select:      
+    if echa_substance_select:
+            st.session_state['AcuteToxicity'] = None
             substance = echa_substance_select
             final_url = search_dossier(substance)
             if final_url:
-                st.page_link(label=':blue[**Riassunto tossicologico completo sul sito ECHA**]', page=final_url)
+                col1,col2 = st.columns(2)
+                with col1:
+                    st.page_link(label=':blue[**Riassunto tossicologico** completo sul sito ECHA]', page=final_url)
+                with col2:
+                    if st.session_state['AcuteToxicity']!=None:
+                        st.page_link(label=':violet[**Acute Toxicity**, scheda completa sul sito ECHA]', page=st.session_state['AcuteToxicity'])
+
+                acute_toxicity_to_pandas()
                 summary_content = rq.get(final_url).text
                 echa_pandas(summary_content)
+
+
+
 elif source ==':blue[CIR]':
     with open("cir-reports.csv") as tab:
         csv = pd.read_csv(tab, names=['Ingredienti', 'INCI Nome', 'Link'])

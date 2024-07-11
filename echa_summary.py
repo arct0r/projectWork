@@ -188,4 +188,8 @@ def echa_pandas(summary_content):
                     divs_to_df(effects, title, inner_divs, subsection)
 
 
+def acute_toxicity_to_pandas():
+    # Questo metodo serve solo a processare le pagine di 'Acute Toxicity', se sono presenti.
+    with st.expander('Acute toxicity'):
+        st.write('Quack')
 
