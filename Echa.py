@@ -11,11 +11,10 @@ import re as standardre
 from st_keyup import st_keyup
 from pubtest import pubchem_stuff
 
-
 #### HEADER ################################
-col1,col2 = st.columns([6,4])
+col1,col2 = st.columns([5,5])
 with col1:
-    st.title('👩🏻‍🔬 Substance Surfer')
+    st.title('👩🏻‍🔬 :red[Tox]*F!nder*')
 with col2:
     source = st.radio(
             "",
@@ -39,11 +38,9 @@ if source == ':rainbow[ECHA]':
                 with col1:
                     st.page_link(label=':blue[**Riassunto tossicologico** completo sul sito ECHA]', page=final_url)
             if st.session_state['AcuteToxicity']!=None:
-                with col2:
-                    'Quack'
+                #with col2:
                     #st.page_link(label=':violet[**Acute Toxicity**, scheda completa sul sito ECHA]', page=st.session_state['AcuteToxicity'])
-                if st.session_state['AcuteToxicity']!=None:
-                    acute_toxicity_to_pandas()
+                acute_toxicity_to_pandas()
                 summary_content = rq.get(final_url).text
                 echa_pandas(summary_content)
 
