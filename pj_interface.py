@@ -73,6 +73,7 @@ with cir_tab:
         response.text    
     else:
         csv
+        '''
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
         # domanda = st.text_area(label='Type your input here')
@@ -83,6 +84,7 @@ with cir_tab:
         if confirm:
             response = model.generate_content(f"{qq} : \n {file.text}")
             response.text
+        '''
 
 with pubchem_tab:
     value = st_keyup("Inserisci il nome o le iniziali della sostanza", key='Sostanza' )
