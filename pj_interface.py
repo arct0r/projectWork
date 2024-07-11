@@ -10,16 +10,16 @@ from echa_summary import echa_pandas
 import re as standardre
 
 
-col1, col2 = st.columns([7,3])
+col1, col2 = st.columns([6,4])
 with col1:
-    st.title('🧪 Substance Searcher ')
+    st.title('👩🏻‍🔬 Substance Surfer')
 
 with col2:
     #Bottone
     source = st.radio(
         "",
-        options=[":rainbow[ECHA]", ":blue[CIR]"],
-        captions = ["Veloce.", "Lento."], horizontal=True, index=0)
+        options=[":violet[**PubChem**]",":rainbow[ECHA]", ":blue[CIR]"],
+        captions = ["Veloce.", "Veloce.", "Lento."], horizontal=True, index=1)
 
 if source == ":rainbow[ECHA]":
     echastuff = pd.read_excel('echastuff.xlsx')
@@ -35,11 +35,6 @@ if source == ":rainbow[ECHA]":
                 st.page_link(label=':blue[**Riassunto tossicologico completo sul sito ECHA**]', page=final_url)
                 summary_content = rq.get(final_url).text
                 echa_pandas(summary_content)
-
-
-
-
-
 elif source ==':blue[CIR]':
     with open("cir-reports.csv") as tab:
         csv = pd.read_csv(tab, names=['Ingredienti', 'INCI Nome', 'Link'])
@@ -68,8 +63,7 @@ elif source ==':blue[CIR]':
         prompt = f"{qq} : \n {dossier_text}"
         if confirm: 
             response = model.generate_content(prompt)
-            response.text
-        
+            response.text    
     else:
         csv
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
@@ -82,6 +76,5 @@ elif source ==':blue[CIR]':
         if confirm:
             response = model.generate_content(f"{qq} : \n {file.text}")
             response.text
-
-
-
+elif source==":violet[**PubChem**]":
+    st.write('Yet to be done.')
