@@ -8,6 +8,8 @@ import time
 from echa_find import search_dossier
 from echa_summary import echa_pandas, acute_toxicity_to_pandas
 import re as standardre
+from st_keyup import st_keyup
+from pubtest import pubchem_stuff
 
 
 col1, col2 = st.columns([6,4])
@@ -88,12 +90,21 @@ elif source ==':blue[CIR]':
             response = model.generate_content(f"{qq} : \n {file.text}")
             response.text
 elif source==":violet[**PubChem**]":
+    value = st_keyup("Inserisci il nome o le iniziali della sostanza", key='Sostanza' )
+    # Notice that value updates after every key press
     pubchem_csv = pd.read_csv('pubchem.csv')
-    pubchem_selection = st.multiselect(label='Seleziona le sostanze', options=pubchem_csv['cmpdname'], max_selections=3)
-    pubchem_list_toggle = st.checkbox('Mostra il database PubChem')
-    if pubchem_list_toggle:
-        pubchem_csv
+    tall_table = st.checkbox(label='Riduci altezza tabella', key='2993')
+    val = 300 if not tall_table else 100
+    pubchem_subs = st.dataframe(pubchem_csv[pubchem_csv['substances'].str.contains(value, case=False, na=False)]['substances'], height=val, use_container_width=True, on_select="rerun", selection_mode="multi-row",hide_index=True, key='3030')
 
-    for substance in pubchem_selection:
-        cell = pubchem_csv.loc[pubchem_csv['cmpdname']==substance]['cid']
-        cell.values[0]
+    df_select = pubchem_subs.selection.rows
+
+
+    if df_select:
+        for i in df_select[:4]:
+                st.subheader(pubchem_csv['substances'].iloc[i])
+                cid = pubchem_csv['cid'].iloc[i]
+                acuteTox, summaryLink = pubchem_stuff(cid)
+                st.page_link(label=':blue[**Link del riassunto completo**]',page=summaryLink)
+                st.dataframe(acuteTox, hide_index=True)
+                st.divider()
