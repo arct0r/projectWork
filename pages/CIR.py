@@ -20,6 +20,7 @@ with col2:
             "",
             options=[":rainbow[ECHA]",":violet[**PubChem**]", ":blue[CIR]"],
             captions = ["LD50", "NOAEL", "Misto"], horizontal=True, index=2)
+
 ############################################
 
 if source == ':rainbow[ECHA]':
@@ -71,4 +72,4 @@ if source == ":blue[CIR]":
         
 
 if source == ":violet[**PubChem**]":
-    st.switch_page('pages\PubChem.py')
+    st.switch_page('pages/PubChem.py')

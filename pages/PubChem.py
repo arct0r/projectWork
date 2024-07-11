@@ -27,7 +27,7 @@ if source == ':rainbow[ECHA]':
     st.switch_page('Echa.py')
 
 if source == ":blue[CIR]":
-    st.switch_page('pages\CIR.py')
+    st.switch_page('pages/CIR.py')
 
 if source == ":violet[**PubChem**]":
     value = st_keyup("Inserisci il nome o le iniziali della sostanza", key='Sostanza' )

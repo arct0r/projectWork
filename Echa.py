@@ -77,7 +77,7 @@ if source == ':rainbow[ECHA]':
                 echa_pandas(summary_content)
 
 if source == ":blue[CIR]":
-    st.switch_page('pages\CIR.py')
+    st.switch_page('pages/CIR.py')
         
 if source == ":violet[**PubChem**]":
-    st.switch_page('pages\PubChem.py')
+    st.switch_page('pages/PubChem.py')
