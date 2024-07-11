@@ -12,14 +12,14 @@ import re as standardre
 
 col1, col2 = st.columns([6,4])
 with col1:
-    st.title('👩🏻‍🔬 Substance Surfer')
+    st.title('👩🏻‍🔬 SubstanceSurfer')
 
 with col2:
     #Bottone
     source = st.radio(
         "",
         options=[":violet[**PubChem**]",":rainbow[ECHA]", ":blue[CIR]"],
-        captions = ["Veloce.", "Veloce.", "Lento."], horizontal=True, index=1)
+        captions = ["LD50", "NOAEL", "Misto"], horizontal=True, index=1)
 
 if source == ":rainbow[ECHA]":
     echastuff = pd.read_excel('echastuff.xlsx')

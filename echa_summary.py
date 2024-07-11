@@ -201,7 +201,7 @@ def echa_pandas(summary_content):
 
 def acute_toxicity_to_pandas():
     # Questo metodo serve solo a processare le pagine di 'Acute Toxicity', se sono presenti.
-    with st.expander('Acute toxicity'):
+    with st.expander('Acute toxicity', expanded=True):
         acute_tox_link = st.session_state['AcuteToxicity']
         page = rq.get(acute_tox_link)
         soup = BeautifulSoup(page.text, 'html.parser')

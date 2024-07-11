@@ -16,5 +16,5 @@
 ✅ Methyl chloroformate
 ✅ Hydrolyzed Quinoa
 🤔 'Carbamic acid ester' Carica i dati ma non riesce a spezzettare le sezioni e mette tutto in due dataframe
-❌ (±)-neomenthol  Questa sostanza è formattata ha informazioni inserite in maniera non convenziale. Semplicemente funziona male.
-
+❌ '(±)-neomenthol' Questa sostanza ha informazioni inserite in maniera non convenziale. Semplicemente funziona male.
+✅ 'L-Aspartic acid, N,N'-1,2-ethanediylbis-'
