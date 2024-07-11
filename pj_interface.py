@@ -88,4 +88,12 @@ elif source ==':blue[CIR]':
             response = model.generate_content(f"{qq} : \n {file.text}")
             response.text
 elif source==":violet[**PubChem**]":
-    st.write('Yet to be done.')
+    pubchem_csv = pd.read_csv('pubchem.csv')
+    pubchem_selection = st.multiselect(label='Seleziona le sostanze', options=pubchem_csv['cmpdname'], max_selections=3)
+    pubchem_list_toggle = st.checkbox('Mostra il database PubChem')
+    if pubchem_list_toggle:
+        pubchem_csv
+
+    for substance in pubchem_selection:
+        cell = pubchem_csv.loc[pubchem_csv['cmpdname']==substance]['cid']
+        cell.values[0]
