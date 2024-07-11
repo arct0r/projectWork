@@ -56,7 +56,7 @@ with cir_tab:
         result = csv.loc[csv['Ingredienti'] == substance]
         link = result.iloc[0]['Link']  
         table = getDF(link)
-        table
+        st.data_editor(table)
         all_links = table['Links'].to_list()
         dossier_text = ''
         for i in range(len(all_links)):
