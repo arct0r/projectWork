@@ -9,7 +9,6 @@ from echa_find import search_dossier
 from echa_summary import echa_pandas, acute_toxicity_to_pandas
 import re as standardre
 from st_keyup import st_keyup
-from pubtest import pubchem_stuff
 import duckdb
 from io import BytesIO
 
