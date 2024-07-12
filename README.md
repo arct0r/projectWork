@@ -2,28 +2,35 @@
 ## Per eseguire il programma:
 per eseguire il programma in locale:
 installa i requirements ed esegui
-streamlit run PubChem.py
-Da remoto: toxicity.streamlit.app
 
-## Sezioni 
+`streamlit run PubChem.py`
+
+Da remoto: [toxicity.streamlit.app](https://toxicity.streamlit.app/)
+
+## Pagine dell'app 
 ### PubChem
-- Locale
-- Non locale
+- Ricerca in locale
+  - Effettua query con DuckDB ad un csv (convertito da json) con numerevoli valori LD50. Risulta instantaneo.
+- Ricerca in rete
+  - Effettua Request a PubChem. Dato il nome di una sostanza ne ottiene una tabella con i vari LD50. Non instantaneo ma neanche lento.
 
 ### ECHA
-- Funziona.
-Intercetto attraverso le requests le pagine del dossier
-è stata la parte piu' complicata del progetto.
-**Ottenere le tabelle dai riassunti tossicologici è stato un incubo**
+In qualche modo *complicato* recupera un dossier attivo (o inattivo) dal sito dell'ECHA e, in un modo ancora piu' complicato, ne estrae il riassunto tossicologico e l'acute toxicity.
+**Ottenere le tabelle dai riassunti tossicologici dall'html del dossier si è rivelato un incubo.**
 
 ### CIR
-pdf, trova le pagine con ld50 / noael, le passa a gemini
-nota: Gemini non funziona in locale perchè richiede IP non italiano
+Data una sostanza verifica se esista un dossier sul sito del CIR. Se esiste ne estrae le pagine dal pdf e cerca i valori LD50 / NOAEL. Queste pagine le fa interpretare da Gemini.
+*nota: Gemini non funziona in locale perchè richiede IP non italiano*
 
 ## Struttura dei file:
-- `PubChem.py`
-- pubtest.py
-
+`PubChem.py` Pagina iniziale per PubChem
+`.pages/Echa.py` Pagina dell'ECHA
+`.pages/CIR.py` Pagina del CIR
+`echa_summary.py` funzioni per creare delle tabelle dato un dossier tossicologico echa
+`echa_find.py` funzioni per recuperare il sito del dossier tossicologico echa
+`pubchem.json` file dal quale abbiamo estratto l'HSDB.csv
+`cir-reports.csv` database delle sostanze inci
+`HSDB.csv` database di PubChem in locale
 
 ## Sostanze Testate per l'ECHA:
 
