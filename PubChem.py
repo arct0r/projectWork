@@ -107,3 +107,6 @@ if source == ":violet[**PubChem**]":
                     acuteTox.drop(['cid', 'sid'], axis=1, inplace=True)
                     st.dataframe(acuteTox, hide_index=True)
                     st.divider()
+
+
+st.image('duckdb.svg', width=80)

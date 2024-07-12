@@ -69,3 +69,5 @@ if source == ":blue[CIR]":
 
 if source == ":violet[**PubChem**]":
     st.switch_page('PubChem.py')
+
+st.image('duckdb.svg', width=80)
