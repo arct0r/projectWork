@@ -35,13 +35,13 @@ if source == ':rainbow[ECHA]':
 if source == ":blue[CIR]":
     with open("cir-reports.csv") as tab:
         csv = pd.read_csv(tab, names=['Ingredienti', 'INCI Nome', 'Link'])
+        # A sto giro non uso duckDB. Non ho tempo di integrarlo e sperimentare :(
 
     csv = csv[2:]
     csv = csv.drop_duplicates(subset=['Link'])
-    ##
+    # Modifico il csv
 
     substance = st.selectbox(label = "Inserisci il nome della sostanza che vuoi cercare:", options=csv['Ingredienti'], index=None)
-    #st.write("Attempting to search: ", substance)
     if substance:
         result = csv.loc[csv['Ingredienti'] == substance]
         link = result.iloc[0]['Link']  
@@ -50,13 +50,16 @@ if source == ":blue[CIR]":
         all_links = table['Links'].to_list()
         dossier_text = ''
         for i in range(len(all_links)):
+            # Sto ciclo for cicla all'interno di tutti i link dei dossier recuperati. Cerca di estrarre qualche NOAEL, LD50
             dossier_text = get_pdf_content(all_links[i])
             if dossier_text:
                 break
         genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
+        # Chiave dell'API che non dovrebbe essere visibile pubblicamente. 
         model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+        # Carico il bro Gemini
         qq = f'Leggi questo testo e trova i valori di NOAEL e di LD50 presenti SOLO E SOLTANTO per la sostanza {substance}, poi creami una tabella coi valori trovati. Se non esiste il valore per la sostanza, restituisci "VALORI NON TROVATI"\n'
-        #confirm = st.button(label='Ask gemini')
+
         prompt = f"{qq} : \n {dossier_text}"
         #if confirm: 
         response = model.generate_content(prompt)

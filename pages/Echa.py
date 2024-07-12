@@ -40,10 +40,10 @@ st.session_state['sections'] = ['Workers - Hazard via inhalation route',
         'General Population - Hazard via oral route',
         'Acute Toxicity'
     ]
+# Carico nella sessione di streamlit il nome delle sezioni. Mi serviranno per i toggle dopo.
+
 if source == ':rainbow[ECHA]':
     col7,col8 = st.columns([9,1])
-
-
     with col8:
         st.markdown("<div style='width: 1px; height: 29px'></div>", unsafe_allow_html=True)
         with st.popover('⚙️'):
@@ -55,6 +55,7 @@ if source == ':rainbow[ECHA]':
             population_inhalation = st.checkbox(label='General Population - Hazard via inhalation route',value=True)
             population_dermal = st.checkbox(label='General Population - Hazard via dermal route',value=True)
             population_oral = st.checkbox(label='General Population - Hazard via oral route',value=True)
+            # Tutta una serie di toggle per controllare quali sezioni risulteranno visibili da una ricerca
             if not acute_toxicity_toggle:
                 st.session_state['sections'].remove('Acute Toxicity')
             if not workers_dermal:
@@ -69,7 +70,10 @@ if source == ':rainbow[ECHA]':
                 st.session_state['sections'].remove('General Population - Hazard via oral route')
 
     conn.execute("CREATE TABLE echa_substances AS SELECT * FROM read_csv_auto('echastuff.csv')")
+    # Carico il dataframe con tutte le sostanze dell'ECHA attraverso DuckDB
     echa_df = conn.execute("SELECT DISTINCT column2 as Substance FROM substances_echa ORDER BY Substance ASC OFFSET 1").df()
+    # Faccio un offset perchè la prima riga è inutile e problematica
+
     with col7:
         df_select = st.selectbox(label='Puoi selezionare la sostanza dalla barra di ricerca o dalla tabella', options=echa_df, placeholder='Isooctane', index=None)
 
@@ -85,14 +89,14 @@ if source == ':rainbow[ECHA]':
                 col1,col2 = st.columns(2)
                 with col1:
                     st.page_link(label=':blue[**Riassunto tossicologico** completo sul sito ECHA]', page=final_url)
+                    #Cerco di recuperare un URL data una sostanza. Se esiste lo passo e inizializzo tutti i metodi che  mi interpretano la pagina ECHA
             else:
                 st.error('Non ho trovato alcun riassunto tossicologico.')
             if st.session_state['AcuteToxicity']!=None:
-                #with col2:
-                    #st.page_link(label=':violet[**Acute Toxicity**, scheda completa sul sito ECHA]', page=st.session_state['AcuteToxicity'])
                 acute_toxicity_to_pandas()
                 summary_content = rq.get(final_url).text
                 echa_pandas(summary_content)
+                # Questo serve per la pagina con il summary dell'Acute Toxicity. Quella è un'altra storia
 
 if source == ":blue[CIR]":
     st.switch_page('pages/CIR.py')

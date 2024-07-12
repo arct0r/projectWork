@@ -30,6 +30,7 @@ with col3:
 ############################################
 
 def pubchem_stuff(cid):
+            # Questo metodo ottiene le tabelle riassuntive dell'Acute toxicity dato il CID di una sostanza su PubChem
             SummaryLink = f"https://pubchem.ncbi.nlm.nih.gov/compound/{cid}#section=Toxicity"
             csv_link = "https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=csv&query={%22download%22:%22*%22,%22collection%22:%22chemidplus%22,%22order%22:[%22relevancescore,desc%22],%22start%22:1,%22limit%22:10000000,%22downloadfilename%22:%22pubchem_cid_QUACK_chemidplus%22,%22where%22:{%22ands%22:[{%22cid%22:%22QUACK%22}]}}"
             csv_link = csv_link.replace('QUACK', str(cid))
@@ -50,10 +51,11 @@ if source == ":blue[CIR]":
 
 if source == ":violet[**PubChem**]":
     value = st_keyup("Inserisci il nome o le iniziali della sostanza", key='Sostanza', placeholder='Nitroglycerin')
-    # Notice that value updates after every key press
+    # Questa variabile serve per il refresh in tempo reale della ricerca. è un componente custom di streamlit.
 
     conn.execute("CREATE TABLE pubchem_live AS SELECT * FROM read_csv('pubchem.csv', header=1)")
     pubchem_csv = conn.execute("SELECT * FROM pubchem_live ORDER BY substances ASC").df()
+    # Piglio il csv con il select di duckDB con i CID di tutte le sostanze su PubChem.
     
     col1, col2, col3, col4 = st.columns([3,2,3,2])
     with col1:
@@ -72,21 +74,26 @@ if source == ":violet[**PubChem**]":
 
 
     val = 300 if not tall_table else 70
+    # Per ridurre la dimensione della tabella
     if HSDB:
         conn.execute("CREATE TABLE local_substances AS SELECT * FROM read_csv('HSDB.csv', header=1)")
-
+        # Comando di duckdb per caricare il csv in locale con tutti i dati sull'Acute Toxicity.
         result = conn.execute("SELECT DISTINCT Name FROM local_substances ORDER BY Name ASC").df()
+        # Che figata nè? Al posto di comandi brutti per pandas usi comandi semplici di SQL
 
         live_df = result[result['Name'].str.contains(value, case=False, na=False)]['Name']
         pubchem_subs = st.dataframe(live_df, height=val, use_container_width=True, on_select="rerun", selection_mode="multi-row",hide_index=True, key='777')
+        # Questa parte qui serve per l'aggiornamento in tempo reale della ricerca
 
         df_select = pubchem_subs.selection.rows
+        # Per ottenere l'index degli elementi selezionati sulla tabella
 
         if df_select:
             for i in df_select[:10]:
                     substance_name = live_df.iloc[i]
                     st.subheader(substance_name)
                     query = "SELECT Measure, Toxicity, Reference FROM local_substances WHERE Name = ?"
+                    # Un altro select di DuckDB
                     query_res = conn.execute(query, [substance_name]).df()
                     st.dataframe(query_res, hide_index=True)
                     st.divider()
@@ -95,7 +102,7 @@ if source == ":violet[**PubChem**]":
     elif not HSDB:
         pubchem_live_search = pubchem_csv[pubchem_csv['substances'].str.contains(value, case=False, na=False)]['substances']
         pubchem_subs = st.dataframe(pubchem_live_search, height=val, use_container_width=True, on_select="rerun", selection_mode="multi-row",hide_index=True, key='3030')
-
+        # Stessa roba di prima per la ricerca live
         df_select = pubchem_subs.selection.rows
 
         if df_select:
@@ -107,6 +114,8 @@ if source == ":violet[**PubChem**]":
                     acuteTox.drop(['cid', 'sid'], axis=1, inplace=True)
                     st.dataframe(acuteTox, hide_index=True)
                     st.divider()
+                    # Con sti comandi ottengo il dataframe della sostanza selezionata da PubChem, lo formatto e lo mostro
 
 
 st.image('duckdb.svg', width=80)
+# Logo di duckDB
