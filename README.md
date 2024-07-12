@@ -17,7 +17,7 @@ Da remoto: [toxicity.streamlit.app](https://toxicity.streamlit.app/)
 
 
 ### ECHA
-- ***Se esiste un dossier tossicologico funziona quasi sempre. Ogni tanto potrebbe avere qualche problema di formattazione del testo o della tabella.***
+- ***Se esiste un dossier tossicologico funziona quasi sempre. Ogni tanto potrebbe avere qualche problema di formattazione del testo o della tabella. In fondo al README è presenta una lista delle sostanze testate.***
   
 In qualche modo *complicato* recupera un dossier attivo (o inattivo) dal sito dell'ECHA e, in un modo ancora piu' complicato, ne estrae il riassunto tossicologico e l'acute toxicity.
 **Ottenere le tabelle dai riassunti tossicologici dall'html del dossier si è rivelato un incubo.**
@@ -26,18 +26,19 @@ In qualche modo *complicato* recupera un dossier attivo (o inattivo) dal sito de
 - ***A causa della fonte estremamente lenta e delle allucinazioni di Gemini il CIR risulta il meno affidabile.***
 
 Data una sostanza verifica se esista un dossier sul sito del CIR. Se esiste ne estrae le pagine dal pdf e cerca i valori LD50 / NOAEL. Queste pagine le fa interpretare da Gemini.
+
 *nota: Gemini non funziona in locale perchè richiede IP non italiano*
 
 
 ## Struttura dei file:
-`PubChem.py` Pagina iniziale per PubChem
-`.pages/Echa.py` Pagina dell'ECHA
-`.pages/CIR.py` Pagina del CIR
-`echa_summary.py` funzioni per creare delle tabelle dato un dossier tossicologico echa
-`echa_find.py` funzioni per recuperare il sito del dossier tossicologico echa
-`pubchem.json` file dal quale abbiamo estratto l'HSDB.csv
-`cir-reports.csv` database delle sostanze inci
-`HSDB.csv` database di PubChem in locale
+- `PubChem.py` Pagina iniziale per PubChem
+- `.pages/Echa.py` Pagina dell'ECHA
+- `.pages/CIR.py` Pagina del CIR
+- `echa_summary.py` funzioni per creare delle tabelle dato un dossier tossicologico echa
+- `echa_find.py` funzioni per recuperare il sito del dossier tossicologico echa
+- `pubchem.json` file dal quale abbiamo estratto l'HSDB.csv
+- `cir-reports.csv` database delle sostanze inci
+- `HSDB.csv` database di PubChem in locale
 
 ## Sostanze Testate per l'ECHA:
 
