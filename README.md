@@ -27,3 +27,10 @@ Da remoto: toxicity.streamlit.app
 - ✅ **'Hydrolyzed Quinoa'**
 - ✅ **'(±)-neomenthol'**
 - ✅ **'L-Aspartic acid, N,N'-1,2-ethanediylbis-'**
+- ✅ **'Benzene, 2,4-dibromo-1-(dimethoxymethyl)-'**
+- 🆗 **'Chlorine dioxide'** tables are broken 
+- ✅ **'Phenethyl salicylate'** 
+- ✅ **'Hydrocarbons, C10-C13, n-alkanes'**
+- ✅ **'Decanenitrile'** 
+- ✅ **'(+)-menthol'** 
+

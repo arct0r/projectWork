@@ -12,7 +12,6 @@ from st_keyup import st_keyup
 from pubtest import pubchem_stuff
 import duckdb
 
-
 #### HEADER ################################
 col1,col2,col3 = st.columns([5,4,1])
 with col1:
@@ -34,9 +33,6 @@ with col3:
 # Mi connetto con duckdb
 conn = duckdb.connect(':memory:')
 
-# Creo una table con un select di duckdb
-conn.execute("CREATE TABLE substances AS SELECT * FROM read_csv_auto('HSDB.csv')")
-
 if source == ':rainbow[ECHA]':
     st.switch_page('pages/Echa.py')
 
@@ -46,7 +42,9 @@ if source == ":blue[CIR]":
 if source == ":violet[**PubChem**]":
     value = st_keyup("Inserisci il nome o le iniziali della sostanza", key='Sostanza', placeholder='Nitroglycerin')
     # Notice that value updates after every key press
-    pubchem_csv = pd.read_csv('pubchem.csv')
+
+    conn.execute("CREATE TABLE pubchem_live AS SELECT * FROM read_csv('pubchem.csv', header=1)")
+    pubchem_csv = conn.execute("SELECT * FROM pubchem_live ORDER BY substances ASC").df()
     
     col1, col2, col3, col4 = st.columns([3,2,3,2])
     with col1:
@@ -64,35 +62,39 @@ if source == ":violet[**PubChem**]":
 
 
 
-    val = 300 if not tall_table else 100
+    val = 300 if not tall_table else 70
     if HSDB:
         conn.execute("CREATE TABLE local_substances AS SELECT * FROM read_csv('HSDB.csv', header=1)")
 
         result = conn.execute("SELECT DISTINCT Name FROM local_substances ORDER BY Name ASC").df()
 
-        pubchem_subs = st.dataframe(result[result['Name'].str.contains(value, case=False, na=False)]['Name'], height=val, use_container_width=True, on_select="rerun", selection_mode="multi-row",hide_index=True, key='777')
+        live_df = result[result['Name'].str.contains(value, case=False, na=False)]['Name']
+        pubchem_subs = st.dataframe(live_df, height=val, use_container_width=True, on_select="rerun", selection_mode="multi-row",hide_index=True, key='777')
 
         df_select = pubchem_subs.selection.rows
 
         if df_select:
             for i in df_select[:10]:
-                    substance_name = result['Name'].iloc[i]
+                    substance_name = live_df.iloc[i]
                     st.subheader(substance_name)
                     query = "SELECT Measure, Toxicity, Reference FROM local_substances WHERE Name = ?"
                     query_res = conn.execute(query, [substance_name]).df()
                     st.dataframe(query_res, hide_index=True)
+                    st.divider()
                     
 
     elif not HSDB:
-        pubchem_subs = st.dataframe(pubchem_csv[pubchem_csv['substances'].str.contains(value, case=False, na=False)]['substances'], height=val, use_container_width=True, on_select="rerun", selection_mode="multi-row",hide_index=True, key='3030')
+        pubchem_live_search = pubchem_csv[pubchem_csv['substances'].str.contains(value, case=False, na=False)]['substances']
+        pubchem_subs = st.dataframe(pubchem_live_search, height=val, use_container_width=True, on_select="rerun", selection_mode="multi-row",hide_index=True, key='3030')
 
         df_select = pubchem_subs.selection.rows
 
         if df_select:
             for i in df_select[:4]:
-                    st.subheader(pubchem_csv['substances'].iloc[i])
+                    st.subheader(pubchem_live_search.iloc[i])
                     cid = pubchem_csv['cid'].iloc[i]
                     acuteTox, summaryLink = pubchem_stuff(cid)
                     st.page_link(label=':blue[**Link del riassunto completo**]',page=summaryLink)
+                    acuteTox.drop(['cid', 'sid'], axis=1, inplace=True)
                     st.dataframe(acuteTox, hide_index=True)
                     st.divider()

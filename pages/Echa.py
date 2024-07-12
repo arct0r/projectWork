@@ -10,6 +10,7 @@ from echa_summary import echa_pandas, acute_toxicity_to_pandas
 import re as standardre
 from st_keyup import st_keyup
 from pubtest import pubchem_stuff
+import duckdb
 
 #### HEADER ################################
 col1,col2,col3 = st.columns([5,4,1])
@@ -26,8 +27,12 @@ with col3:
           ''':violet[**PubChem**] estra instantaneamente i valori LD50. 🚀'''
           ''':rainbow[**ECHA**] estrae velocemente dai dossier tossicologici sul sito Echa. Sia NOAEL sia LD50. 😎'''
           ''':blue[CIR] è lento. Estrae dai pdf e fa interpretare all'***Intelligenza Artificiale*** 😲'''
-    
+
 ############################################
+conn = duckdb.connect(':memory:')
+
+# Creo una table con un select di duckdb
+conn.execute("CREATE TABLE substances_echa AS SELECT * FROM read_csv_auto('echastuff.csv')")
 
 st.session_state['sections'] = ['Workers - Hazard via inhalation route',
         'Workers - Hazard via dermal route',
@@ -37,14 +42,14 @@ st.session_state['sections'] = ['Workers - Hazard via inhalation route',
         'Acute Toxicity'
     ]
 if source == ':rainbow[ECHA]':
-    echastuff = pd.read_excel('echastuff.xlsx')
     col7,col8 = st.columns([9,1])
-    with col7:
-        echa_substance_select = st.selectbox(label = "Inserisci il nome della sostanza che vuoi cercare:", options=echastuff['Substance'], index=None)
+
+
     with col8:
         st.markdown("<div style='width: 1px; height: 29px'></div>", unsafe_allow_html=True)
         with st.popover('⚙️'):
             'Mostra le seguenti sezioni'
+            tall_bar = st.checkbox(label='Tabella sostanze', value=False)
             acute_toxicity_toggle = st.checkbox(label='Acute Toxicity',value=True)
             workers_dermal = st.checkbox(label='Workers - Hazard via dermal route',value=True)
             workers_inhalation = st.checkbox(label='Workers - Hazard via inhalation route',value=True)
@@ -64,12 +69,18 @@ if source == ':rainbow[ECHA]':
             if not population_oral:
                 st.session_state['sections'].remove('General Population - Hazard via oral route')
 
-    if not echa_substance_select:
-        echastuff
-    # Se schiaccio una sostanza echa dal multiselect
-    if echa_substance_select:
+    conn.execute("CREATE TABLE echa_substances AS SELECT * FROM read_csv_auto('echastuff.csv')")
+    echa_df = conn.execute("SELECT DISTINCT column2 as Substance FROM substances_echa ORDER BY Substance ASC OFFSET 1").df()
+    with col7:
+        df_select = st.selectbox(label='Puoi selezionare la sostanza dalla barra di ricerca o dalla tabella', options=echa_df, placeholder='Isooctane', index=None)
+
+    with st.expander('Tabella sostanze', expanded=True if tall_bar else False):
+        st_select_df = st.dataframe(echa_df, hide_index=True, height=300, use_container_width=True, on_select='rerun', selection_mode='single-row')
+
+    if df_select or st_select_df.selection.rows:
+            substance = df_select if df_select else echa_df['Substance'].iloc[st_select_df.selection.rows[0]]
             st.session_state['AcuteToxicity'] = None
-            substance = echa_substance_select
+            st.subheader(substance)
             final_url = search_dossier(substance)
             if final_url:
                 col1,col2 = st.columns(2)

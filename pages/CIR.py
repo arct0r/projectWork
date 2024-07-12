@@ -48,7 +48,7 @@ if source == ":blue[CIR]":
         result = csv.loc[csv['Ingredienti'] == substance]
         link = result.iloc[0]['Link']  
         table = getDF(link)
-        st.data_editor(table)
+        st.page_link(page=table['Links'].iloc[0], label=':blue[**Link del dossier completo**]')
         all_links = table['Links'].to_list()
         dossier_text = ''
         for i in range(len(all_links)):
@@ -64,17 +64,9 @@ if source == ":blue[CIR]":
         response = model.generate_content(prompt)
         response.text    
     else:
-        csv
-        #genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
-        #model = genai.GenerativeModel(model_name="gemini-1.5-flash")
-        # domanda = st.text_area(label='Type your input here')
-        #qq = 'Leggi questo testo e trova i valori di NOAEL e di LD50s presenti, poi creami una tabella coi valori trovati\n'
-        #git_link = 'https://github.com/arct0r/projectWork/raw/main/Prova.txt'
-        #file = rq.get(git_link)
-        #confirm = st.button(label='Ask gemini')
-        #if confirm:
-        #    response = model.generate_content(f"{qq} : \n {file.text}")
-        #    response.text
+        st.data_editor(csv[['Ingredienti', 'Link']], use_container_width=True,     column_config={
+        "Link": st.column_config.LinkColumn("Link dei dossiers 🌐"),
+    },)
         
 
 if source == ":violet[**PubChem**]":
