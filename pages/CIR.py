@@ -22,7 +22,7 @@ with col2:
 with col3:
     st.markdown("<div style='width: 1px; height: 29px'></div>", unsafe_allow_html=True)
     with st.popover('ℹ️'):
-          ''':violet[**PubChem**] estra instantaneamente i valori LD50. 🚀'''
+          ''':violet[**PubChem**] estrae instantaneamente i valori LD50. 🚀'''
           ''':rainbow[**ECHA**] estrae velocemente dai dossier tossicologici sul sito Echa. Sia NOAEL sia LD50. 😎'''
           ''':blue[CIR] è lento. Estrae dai pdf e fa interpretare all'***Intelligenza Artificiale*** 😲'''
 
