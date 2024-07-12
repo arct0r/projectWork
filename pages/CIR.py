@@ -43,27 +43,28 @@ if source == ":blue[CIR]":
 
     substance = st.selectbox(label = "Inserisci il nome della sostanza che vuoi cercare:", options=csv['Ingredienti'], index=None)
     if substance:
-        result = csv.loc[csv['Ingredienti'] == substance]
-        link = result.iloc[0]['Link']  
-        table = getDF(link)
-        st.page_link(page=table['Links'].iloc[0], label=':blue[**Link del dossier completo**]')
-        all_links = table['Links'].to_list()
-        dossier_text = ''
-        for i in range(len(all_links)):
-            # Sto ciclo for cicla all'interno di tutti i link dei dossier recuperati. Cerca di estrarre qualche NOAEL, LD50
-            dossier_text = get_pdf_content(all_links[i])
-            if dossier_text:
-                break
-        genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
-        # Chiave dell'API che non dovrebbe essere visibile pubblicamente. 
-        model = genai.GenerativeModel(model_name="gemini-1.5-flash")
-        # Carico il bro Gemini
-        qq = f'Leggi questo testo e trova i valori di NOAEL e di LD50 presenti SOLO E SOLTANTO per la sostanza {substance}, poi creami una tabella coi valori trovati. Se non esiste il valore per la sostanza, restituisci "VALORI NON TROVATI"\n'
+        with st.spinner('Cooking...'):
+            result = csv.loc[csv['Ingredienti'] == substance]
+            link = result.iloc[0]['Link']  
+            table = getDF(link)
+            st.page_link(page=table['Links'].iloc[0], label=':blue[**Link del dossier completo**]')
+            all_links = table['Links'].to_list()
+            dossier_text = ''
+            for i in range(len(all_links)):
+                # Sto ciclo for cicla all'interno di tutti i link dei dossier recuperati. Cerca di estrarre qualche NOAEL, LD50
+                dossier_text = get_pdf_content(all_links[i])
+                if dossier_text:
+                    break
+            genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
+            # Chiave dell'API che non dovrebbe essere visibile pubblicamente. 
+            model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+            # Carico il bro Gemini
+            qq = f'Leggi questo testo e trova i valori di NOAEL e di LD50 presenti SOLO E SOLTANTO per la sostanza {substance}, poi creami una tabella coi valori trovati. Se non esiste il valore per la sostanza, restituisci "VALORI NON TROVATI"\n'
 
-        prompt = f"{qq} : \n {dossier_text}"
-        #if confirm: 
-        response = model.generate_content(prompt)
-        response.text    
+            prompt = f"{qq} : \n {dossier_text}"
+            #if confirm: 
+            response = model.generate_content(prompt)
+            response.text    
     else:
         st.data_editor(csv[['Ingredienti', 'Link']], use_container_width=True,     column_config={
         "Link": st.column_config.LinkColumn("Link dei dossiers 🌐"),

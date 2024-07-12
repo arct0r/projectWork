@@ -20,7 +20,6 @@ def search_dossier(substance):
             rmlId = req_0_json['items'][0]['substanceIndex']['rmlId']
             rmlName= req_0_json['items'][0]['substanceIndex']['rmlName']
         except:
-            st.error('La sostanza selezionata non contiene riassunti tossicologici.')
             return False
         #'rmlId: ' + rmlId
         #'rmlName: '+rmlName
@@ -73,7 +72,6 @@ def search_dossier(substance):
 
         #print(type(re.search('href="([^"]+)"', str_div)).__name__)
         if type(standardre.search('href="([^"]+)"', str_div)).__name__ == 'NoneType':
-            st.error('Non esistono riassunti tossicologici per questa sostanza.')
             return False
             st.stop()
 
@@ -104,7 +102,6 @@ def search_dossier(substance):
             # ora serve il metodo che mi interpreti l'
             print('Acute toxicity link:')
             print(acute_toxicity_link)
-            st.page_link(label=':violet[**Acute Toxicity**, scheda completa sul sito ECHA]', page=acute_toxicity_link)
             st.session_state['AcuteToxicity'] = acute_toxicity_link
         if final_url:
             return final_url
