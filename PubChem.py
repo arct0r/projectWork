@@ -106,14 +106,15 @@ if source == ":violet[**PubChem**]":
         df_select = pubchem_subs.selection.rows
 
         if df_select:
-            for i in df_select[:4]:
-                    st.subheader(pubchem_live_search.iloc[i])
-                    cid = pubchem_csv['cid'].iloc[i]
-                    acuteTox, summaryLink = pubchem_stuff(cid)
-                    st.page_link(label=':blue[**Link del riassunto completo**]',page=summaryLink)
-                    acuteTox.drop(['cid', 'sid'], axis=1, inplace=True)
-                    st.dataframe(acuteTox, hide_index=True)
-                    st.divider()
+            with st.spinner(f'Loading...'):
+                for i in df_select[:4]:
+                        st.subheader(pubchem_live_search.iloc[i])
+                        cid = pubchem_csv['cid'].iloc[i]
+                        acuteTox, summaryLink = pubchem_stuff(cid)
+                        st.page_link(label=':blue[**Link del riassunto completo**]',page=summaryLink)
+                        acuteTox.drop(['cid', 'sid'], axis=1, inplace=True)
+                        st.dataframe(acuteTox, hide_index=True)
+                        st.divider()
                     # Con sti comandi ottengo il dataframe della sostanza selezionata da PubChem, lo formatto e lo mostro
 
 
