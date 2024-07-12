@@ -7,7 +7,6 @@ import lxml
 from echa_summary import echa_pandas, acute_toxicity_to_pandas
 import re as standardre
 
-# Lista delle sostanza testate
 
 def search_dossier(substance):
         # Prima parte. Ottengo rmlID e rmlName
@@ -26,21 +25,18 @@ def search_dossier(substance):
 
         # Seconda parte. Ottengo assetExternalId e rootKey
         req_1_url = 'https://chem.echa.europa.eu/api-dossier-list/v1/dossier?pageIndex=1&pageSize=100&rmlId=' + rmlId + '&registrationStatuses=Active'
-        #st.code('https://chem.echa.europa.eu/api-dossier-list/v1/dossier?pageIndex=1&pageSize=100&rmlId=100.244.411&registrationStatuses=Active')
+
         req_1 = requests.get(req_1_url)
         req_1_json = req_1.json()
-        #req_1_json
+
         if req_1_json['items']==[]:
-            #':red[No active dossiers. Trying the Inactive ones.]'
+            # Se non trova alcun dossier attivo cerco tra quelli inattivi
             req_1_url = 'https://chem.echa.europa.eu/api-dossier-list/v1/dossier?pageIndex=1&pageSize=100&rmlId=' + rmlId + '&registrationStatuses=Inactive'
-            #st.code('https://chem.echa.europa.eu/api-dossier-list/v1/dossier?pageIndex=1&pageSize=100&rmlId=100.244.411&registrationStatuses=Active')
             req_1 = requests.get(req_1_url)
             req_1_json = req_1.json()
-            #req_1_json
             if req_1_json['items']==[]:
                 f":red[Non ho trovato nessun dossier attivo per '{rmlName}'. Cerco tra quelli inattivi]"
                 return False
-                st.stop()
             else:
                f":green[Ho trovato dei dossiers inattivi per '{rmlName}']"
         else:
@@ -70,8 +66,8 @@ def search_dossier(substance):
         str_div = str(div)
         str_div = str_div.split('</div>')[0]
 
-        #print(type(re.search('href="([^"]+)"', str_div)).__name__)
         if type(standardre.search('href="([^"]+)"', str_div)).__name__ == 'NoneType':
+            # Un regex per trovare l'href che mi serve
             return False
             st.stop()
 
@@ -81,21 +77,11 @@ def search_dossier(substance):
         if div_acute_toxicity:
             for div in div_acute_toxicity:
                 a = div.find_all('a', href=True)[0]
-                #print('Quack')
                 acute_toxicity_id = standardre.search('href="([^"]+)"', str(a)).group(1)
-                #print(acute_toxicity_link)
 
-
-
-            #uic_acute_toxicity = div_acute_toxicity.find_all('a', {'rel':'host'}).href
-        #print(uic_acute_toxicity)
-
-    #index
 
         # Quinta parte. Recupero l'html del dossier tossicologico e faccio ritornare il content
-        #st.code("'https://chem.echa.europa.eu/html-pages/'+ assetExternalId + '/documents/' + UIC + '.html'")
         final_url = 'https://chem.echa.europa.eu/html-pages/'+ assetExternalId + '/documents/' + UIC + '.html'
-        #final_url
                 
         if acute_toxicity_id:
             acute_toxicity_link = 'https://chem.echa.europa.eu/html-pages/'+ assetExternalId + '/documents/' + acute_toxicity_id + '.html'

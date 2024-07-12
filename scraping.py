@@ -8,13 +8,6 @@ import re
 from io import BytesIO
 
 
-dossier_path = 'C:/Users/PierluigiDurante/OneDrive - ITS Angelo Rizzoli/Desktop/Project Work 1/Progetto/projectWork/dossier.pdf'
-
-# with open('quacker.html', errors='ignore') as page:
-    #soup = BeautifulSoup(page, 'html.parser')
-
-# print(soup.prettify())
-
 # Funzione che crea il dataframe con tutte le report e le reference, una volta definito l'ingrediente,
 # prende in input il link della pagina contenente tutte le report dell'ingrediente
 
@@ -135,3 +128,4 @@ def get_pdf_content(url):
 
 url = 'https://cir-reports.cir-safety.org/view-attachment/?id=a9a8b89b-8e74-ec11-8943-0022482f06a6'
 get_pdf_content(url)
+

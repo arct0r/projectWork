@@ -8,6 +8,7 @@ import time
 from echa_find import search_dossier
 from echa_summary import echa_pandas, acute_toxicity_to_pandas
 import re as standardre
+import random
 
 #### HEADER ################################
 col1,col2,col3 = st.columns([5,4,1])
@@ -31,7 +32,6 @@ if source == ':rainbow[ECHA]':
     st.switch_page('pages/Echa.py')
 
 
-
 if source == ":blue[CIR]":
     with open("cir-reports.csv") as tab:
         csv = pd.read_csv(tab, names=['Ingredienti', 'INCI Nome', 'Link'])
@@ -43,7 +43,7 @@ if source == ":blue[CIR]":
 
     substance = st.selectbox(label = "Inserisci il nome della sostanza che vuoi cercare:", options=csv['Ingredienti'], index=None)
     if substance:
-        with st.spinner('Cooking...'):
+        with st.spinner(f'Cooking... 🍕'):
             result = csv.loc[csv['Ingredienti'] == substance]
             link = result.iloc[0]['Link']  
             table = getDF(link)

@@ -24,7 +24,7 @@ import requests as rq
 #       -   'Explanation for hazard conclusion',
 #       -   'Acute/short term exposure' 
 
-# Questo per ogni sezione nella main sections. Quite the challenge. 
+# Questo per ogni sezione nella main sections, quindi 5-6. Quite the challenge.
 
 def highlight_noael(val):
     color = 'blue'
@@ -32,7 +32,7 @@ def highlight_noael(val):
     if val in ['NOAEL', 'DNEL (Derived No Effect Level)']:
         return f'color: {color}; font-weight: {weight}'
     return ''
-# Questa funzione mi serve per evidenziare i valori NOAEL nelle tabelle
+# Questa funzione mi serve per evidenziare i valori NOAEL nelle tabelle finali.
 
 def echa_pandas(summary_content):
     main_sections = [
@@ -125,14 +125,7 @@ def echa_pandas(summary_content):
                 if skip == True:
                     skip = False
                     continue
-                #if ('mg/' or '/kg' or 'bw/' or '/day') in inner_divs:
-                    # Questa condizione mi serve a fare in modo che l'algoritmo non mi splitti il value con le unità di misura in righe diverse
-                    #f'debugging:'
-                    #st.code(f'''inner_div: {inner_divs}
-                    #            inner_div[0]: {inner_divs[0]}
-                    #            inner_div[-1]: {inner_divs[-1]}
-                    #            key: {key}
-                    #            current value: {div}''')
+
                 if ('\n' or '\t') in div:
                     div = div.replace('\n', '     ')
                     div = div.replace('\t', '     ')
@@ -144,17 +137,12 @@ def echa_pandas(summary_content):
                         if inner_divs[0] != '' and inner_divs[-1] != '' and  inner_divs[-2] != '':
                         # sta condizione serve quando ho situazioni di questo tipo:
                         #inner_div: ['Value', '', '', '', '', '', '2.4', ' mg/kg bw/day']
-                            #print("Found similiar 0 and -2:" ,inner_divs[0], " | ",  inner_divs[-2] , " | ", inner_divs[-1])
                             if inner_divs[0] != inner_divs[-2] and inner_divs[0] not in right_values:
                                 values_corrected.append(inner_divs[0].rstrip().lstrip())
                                 values_corrected.append(inner_divs[-2].lstrip() + inner_divs[-1].rstrip())
                                 #f":green[Appended left: **{inner_divs[0].rstrip().lstrip()}** | right: **{inner_divs[-2].lstrip() + inner_divs[-1].rstrip()}**]"
                                 skip = True
-                                # Questo flag serve a far skippare il prossimo div. Non comprenderò questo codice tra qualche minuto
-                            #else:
-                                #print('Trap!')
-                                #f":red[------------- That's a trap! I'm not appending '{inner_divs[0]} and '{inner_divs[-2]} and '{inner_divs[-1]}']"
-                                #f":red[inner_divs: {inner_divs}]"   
+                                # Questo flag serve a far skippare il prossimo div. Non comprenderò questo codice tra qualche minuto 
                         else:
                             if inner_divs[0] != inner_divs[-2] and inner_divs[0] not in right_values:
                                 values_corrected.append(inner_divs[0].rstrip().lstrip())
@@ -192,7 +180,8 @@ def echa_pandas(summary_content):
                 del truncated_df['index']
                 styled_df = truncated_df.style.map(highlight_noael)
                 st.dataframe(styled_df, use_container_width=True, hide_index=True)
-                # Con questo try/catch sto rimuovendo le righe dopo la prima occorrenza del valore NOAEL e sto colorando i valori NOAEL
+                # Con questo try/catch sto rimuovendo le righe dopo la prima occorrenza del valore NOAEL e sto colorando i valori NOAEL.
+                # Essenzialmente tolgo la roba inutile.
             except Exception as e:
                 print(f"Error occurred: {str(e)}")
                 del df_base['index']
@@ -208,8 +197,6 @@ def echa_pandas(summary_content):
     for subsection in tree_full:
             # Workers x2, Hazard x3
             if subsection in st.session_state['sections']:
-            # Occhio! Questo è per i filtri.
-
                 with st.expander(subsection, expanded=True):
                     systemic = tree_full[subsection]['Systemic Effects']
                     local = tree_full[subsection]['Local Effects']
@@ -237,17 +224,12 @@ def acute_toxicity_to_pandas():
             soup.prettify()
             
             body = soup.find(class_ = 'das-document ENDPOINT_SUMMARY AcuteToxicity')
-            print('---------------------------------- BODY ----------------------------------')
-            print(body)
             key_information = body.find('section', class_='das-block KeyInformation')
-            print('---------------------------------- KEY INFO ----------------------------------')
-            print(key_information)
             try:
                 key_info = key_information.find('div', class_='das-field_value das-field_value_html')
             except:
                 print('Cant find divs for Acute Toxicity Summaries')
                 return False
-            #key_info = [p.text.strip() for p in key_info_p if p.text.strip() != '']
             if key_info.find_all('p'):
                 st.write(':red[**Summary:**] ')
                 for info in key_info.find_all('p'):
@@ -256,4 +238,3 @@ def acute_toxicity_to_pandas():
                 st.write(':red[**Summary:**] ')
                 for info in key_info.text.split('.'):
                     st.write(info)
-                print(key_info)
