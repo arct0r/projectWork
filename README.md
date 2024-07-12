@@ -17,12 +17,14 @@ Da remoto: [toxicity.streamlit.app](https://toxicity.streamlit.app/)
 
 
 ### ECHA
-- *** Se esiste un dossier tossicologico funziona quasi sempre. Ogni tanto potrebbe avere qualche problema di formattazione del testo o della tabella.***
+- ***Se esiste un dossier tossicologico funziona quasi sempre. Ogni tanto potrebbe avere qualche problema di formattazione del testo o della tabella.***
+  
 In qualche modo *complicato* recupera un dossier attivo (o inattivo) dal sito dell'ECHA e, in un modo ancora piu' complicato, ne estrae il riassunto tossicologico e l'acute toxicity.
 **Ottenere le tabelle dai riassunti tossicologici dall'html del dossier si è rivelato un incubo.**
 
 ### CIR
-- *** A causa della fonte estremamente lenta e delle allucinazioni di Gemini il CIR risulta il meno affidabile. ***
+- ***A causa della fonte estremamente lenta e delle allucinazioni di Gemini il CIR risulta il meno affidabile.***
+
 Data una sostanza verifica se esista un dossier sul sito del CIR. Se esiste ne estrae le pagine dal pdf e cerca i valori LD50 / NOAEL. Queste pagine le fa interpretare da Gemini.
 *nota: Gemini non funziona in locale perchè richiede IP non italiano*
 
