@@ -106,7 +106,7 @@ if source == ":violet[**PubChem**]":
         df_select = pubchem_subs.selection.rows
 
         if df_select:
-            with st.spinner(f'Loading...'):
+            with st.spinner(f'Recupero i dati da PubChem...'):
                 for i in df_select[:4]:
                         st.subheader(pubchem_live_search.iloc[i])
                         cid = pubchem_csv['cid'].iloc[i]
