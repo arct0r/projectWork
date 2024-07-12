@@ -26,6 +26,12 @@ import requests as rq
 
 # Questo per ogni sezione nella main sections. Quite the challenge. 
 
+def highlight_noael(value):
+    if value == 'NOAEL':
+        return 'color: yellow'
+    else:
+        return ''
+
 def echa_pandas(summary_content):
     main_sections = [
         'Workers - Hazard via inhalation route',
@@ -168,15 +174,25 @@ def echa_pandas(summary_content):
         df_base = df_base.drop_duplicates()   
         df_base = df_base[~df_base['Description'].isin(right_values)]
         df_base = df_base[~df_base['Value'].isin(['[Empty]', '[Not publishable]', 'Justification', 'AF for dose response relationship', 'AF for intraspecies differences', 'AF for other interspecies differences', 'AF for interspecies differences (allometric scaling)', 'AF for differences in duration of exposure'])]
-        #df = df.loc[df['sex']=='Male']
-        #df[~df['column_name'].isin(values_list)]
+        # Ignoro le righe 'Rotte'. Ogni tanto capitano.
 
         if not df_base.empty:
             st.write(f"{effects}: {divtitle}")
-            st.dataframe(df_base, use_container_width=True)
+            try:
+                noael_index = int(df_base.index[df_base['Value'] == 'NOAEL'][0])
+                print(noael_index)
+                #st.write(noael_index)
+                truncated_df = df_base[:noael_index+2].copy()
+                print('this is a truncated df')
+                print(truncated_df)
+                st.dataframe(truncated_df, use_container_width=True, hide_index=True)
+            except:
+                styled_df = df_base.style.map(highlight_noael)
+                st.dataframe(styled_df, use_container_width=True, hide_index=True)
+            # La fine della sofferenza. Printo il titolo del dataframe e il dataframe solo se non sono vuoti.
+            
         else:
             return False
-        # La fine della sofferenza. Printo il titolo del dataframe e il dataframe solo se non sono vuoti.
         
         
 
