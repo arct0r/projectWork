@@ -33,4 +33,9 @@ Da remoto: toxicity.streamlit.app
 - ✅ **'Hydrocarbons, C10-C13, n-alkanes'**
 - ✅ **'Decanenitrile'** 
 - ✅ **'(+)-menthol'** 
+- ✅ **'(+)-neomenthol'** 
+- ✅ **'Hydrocarbons, C3'** 
+- ✅ **'Ethanol, 1-ethoxy-2,2-difluoro-'** 
+- ✅ **'Butyl butyrate'** 
+
 
