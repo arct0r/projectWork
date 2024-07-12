@@ -9,18 +9,21 @@ Da remoto: toxicity.streamlit.app
 
 ## Sostanze Testate per l'ECHA:
 
-- ✅ **'Isooctane'** WORKING PERFECTLY
-- ✅ **'Cyanoguanidine'** WORKING PERFECTLY
-- ✅ **'Propyl acetate'** WORKING PERFECTLY
-- 🆗 **'AZODICARBOXYLIC DIMORPHOLIDE'** WORKING NOT PERFECTLY
-- ✅ **'(-) Vince Lactam'** WORKING PERFECTLY
-- ✅ **'(+)-tartaric acid'** WORKING PERFECTLY
-- 🆗 **'(+)-bornan-2-one'** WORKING NOT PERFECTLY
-- ✅ **'(+/-)-cis-3-acetoxy-4-phenylazetidine-2-one [BMS 183040-01]'** WORKING PERFECTLY
-- ✅ **'(+)-tartaric acid'** , WORKING PERFECTLY
-- ✅ **'( 4-hydroxystyrene, 4-t butoxy styrene and 2,5-dimethyl -2.5-diacryloxyhexane) copolymer'** WORKING PERFECTLY
-- ✅ **'Methyl chloroformate'** WORKING PERFECTLY
-- ✅ **'Hydrolyzed Quinoa'** WORKING PERFECTLY
-- 🆗 **'Carbamic acid ester'** WORKING NOT PERFECTLY
-- 🆗 **'(±)-neomenthol'** WORKING NOT PERFECTLY
-- ✅ **'L-Aspartic acid, N,N'-1,2-ethanediylbis-'** WORKING PERFECTLY
+✅: Working perfectly
+🆗: It works but not perfectly
+❌: It does not work 
+
+- ✅ **'Isooctane'** 
+- ✅ **'Carbamic acid ester'**
+- ✅ **'Cyanoguanidine'** 
+- 🆗 **'Propyl acetate'** Acute Toxicity not perfectly formatted
+- 🆗 **'AZODICARBOXYLIC DIMORPHOLIDE'** Should say "dossier not found"
+- ✅ **'(-) Vince Lactam'** 
+- ✅ **'(+)-tartaric acid'**
+- 🆗 **'(+)-bornan-2-one'** Acute Toxicity not perfectly formatted
+- ✅ **'(+/-)-cis-3-acetoxy-4-phenylazetidine-2-one [BMS 183040-01]'** 
+- ✅ **'( 4-hydroxystyrene, 4-t butoxy styrene and 2,5-dimethyl -2.5-diacryloxyhexane) copolymer'**
+- ✅ **'Methyl chloroformate'**
+- ✅ **'Hydrolyzed Quinoa'**
+- ✅ **'(±)-neomenthol'**
+- ✅ **'L-Aspartic acid, N,N'-1,2-ethanediylbis-'**

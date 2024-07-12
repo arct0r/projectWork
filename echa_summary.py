@@ -26,11 +26,13 @@ import requests as rq
 
 # Questo per ogni sezione nella main sections. Quite the challenge. 
 
-def highlight_noael(value):
-    if value == 'NOAEL':
-        return 'color: yellow'
-    else:
-        return ''
+def highlight_noael(val):
+    color = 'blue'
+    weight = 'bold'
+    if val in ['NOAEL', 'DNEL (Derived No Effect Level)']:
+        return f'color: {color}; font-weight: {weight}'
+    return ''
+# Questa funzione mi serve per evidenziare i valori NOAEL nelle tabelle
 
 def echa_pandas(summary_content):
     main_sections = [
@@ -113,7 +115,7 @@ def echa_pandas(summary_content):
     # Questa è la parte in cui la complessità diventa tale che smetto di capirci qualcosa e vado ad istinto
     # Essenzialmente ho una sfilza di divs rotti e mal formattati da trasformare in dataframes di panda. 
 
-        right_values = ['5','4','3','2', '1', '[Not publishable]', 'No remaining uncertainties.', '[Empty]', 'Default value for workers according to ECHA REACH Guidance.','The available studies are pre/GLP and non-guideline studies.', ]
+        right_values = ['5','4','3','2', '1', '[Not publishable]', 'No remaining uncertainties.', '[Empty]', 'Default value for workers according to ECHA REACH Guidance.','The available studies are pre/GLP and non-guideline studies.']
 
         inner_divs = [value.text.lstrip().rstrip() for value in inner_divs if value.text.lstrip().rstrip() != '']
         values_corrected = []
@@ -174,19 +176,25 @@ def echa_pandas(summary_content):
         df_base = df_base.drop_duplicates()   
         df_base = df_base[~df_base['Description'].isin(right_values)]
         df_base = df_base[~df_base['Value'].isin(['[Empty]', '[Not publishable]', 'Justification', 'AF for dose response relationship', 'AF for intraspecies differences', 'AF for other interspecies differences', 'AF for interspecies differences (allometric scaling)', 'AF for differences in duration of exposure'])]
-        # Ignoro le righe 'Rotte'. Ogni tanto capitano.
+        df_base = df_base.loc[df_base["Value"] != 'no hazard identified']
+        df_base = df_base.loc[df_base["Value"] != 'low hazard (no threshold derived)']
+        df_base = df_base.loc[df_base["Value"] != 'hazard unknown but no further hazard information necessary as no exposure expected']
+        df_base['Description'] = df_base['Description'].replace('Value', '➔')
+        # Rimuovo tante eccezioni. Le trovo man mano che testo.
 
         if not df_base.empty:
             st.write(f"{effects}: {divtitle}")
             try:
-                noael_index = int(df_base.index[df_base['Value'] == 'NOAEL'][0])
-                print(noael_index)
-                #st.write(noael_index)
-                truncated_df = df_base[:noael_index+2].copy()
-                print('this is a truncated df')
-                print(truncated_df)
-                st.dataframe(truncated_df, use_container_width=True, hide_index=True)
-            except:
+                df_base = df_base.reset_index()
+                noael_index = df_base[df_base['Value'] == 'NOAEL'].index[0]
+                truncated_df = df_base[:noael_index+2]
+                del truncated_df['index']
+                styled_df = truncated_df.style.map(highlight_noael)
+                st.dataframe(styled_df, use_container_width=True)
+                # Con questo try/catch sto rimuovendo le righe dopo la prima occorrenza del valore NOAEL e sto colorando i valori NOAEL
+            except Exception as e:
+                print(f"Error occurred: {str(e)}")
+                del df_base['index']
                 styled_df = df_base.style.map(highlight_noael)
                 st.dataframe(styled_df, use_container_width=True, hide_index=True)
             # La fine della sofferenza. Printo il titolo del dataframe e il dataframe solo se non sono vuoti.
