@@ -180,6 +180,7 @@ def echa_pandas(summary_content):
         df_base = df_base.loc[df_base["Value"] != 'low hazard (no threshold derived)']
         df_base = df_base.loc[df_base["Value"] != 'hazard unknown but no further hazard information necessary as no exposure expected']
         df_base['Description'] = df_base['Description'].replace('Value', '➔')
+        df_base = df_base.applymap(lambda x: x.replace('Â', '') if isinstance(x, str) else x)
         # Rimuovo tante eccezioni. Le trovo man mano che testo.
 
         if not df_base.empty:
@@ -190,7 +191,7 @@ def echa_pandas(summary_content):
                 truncated_df = df_base[:noael_index+2]
                 del truncated_df['index']
                 styled_df = truncated_df.style.map(highlight_noael)
-                st.dataframe(styled_df, use_container_width=True)
+                st.dataframe(styled_df, use_container_width=True, hide_index=True)
                 # Con questo try/catch sto rimuovendo le righe dopo la prima occorrenza del valore NOAEL e sto colorando i valori NOAEL
             except Exception as e:
                 print(f"Error occurred: {str(e)}")

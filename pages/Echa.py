@@ -9,7 +9,6 @@ from echa_find import search_dossier
 from echa_summary import echa_pandas, acute_toxicity_to_pandas
 import re as standardre
 from st_keyup import st_keyup
-from pubtest import pubchem_stuff
 import duckdb
 
 #### HEADER ################################
@@ -50,7 +49,7 @@ if source == ':rainbow[ECHA]':
         with st.popover('⚙️'):
             'Mostra le seguenti sezioni'
             tall_bar = st.checkbox(label='Tabella sostanze', value=False)
-            acute_toxicity_toggle = st.checkbox(label='Acute Toxicity',value=True)
+            acute_toxicity_toggle = st.checkbox(label='Acute Toxicity',value=False)
             workers_dermal = st.checkbox(label='Workers - Hazard via dermal route',value=True)
             workers_inhalation = st.checkbox(label='Workers - Hazard via inhalation route',value=True)
             population_inhalation = st.checkbox(label='General Population - Hazard via inhalation route',value=True)
@@ -86,6 +85,8 @@ if source == ':rainbow[ECHA]':
                 col1,col2 = st.columns(2)
                 with col1:
                     st.page_link(label=':blue[**Riassunto tossicologico** completo sul sito ECHA]', page=final_url)
+            else:
+                st.error('Non ho trovato alcun riassunto tossicologico.')
             if st.session_state['AcuteToxicity']!=None:
                 #with col2:
                     #st.page_link(label=':violet[**Acute Toxicity**, scheda completa sul sito ECHA]', page=st.session_state['AcuteToxicity'])
