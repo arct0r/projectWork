@@ -32,6 +32,10 @@ conn = duckdb.connect(':memory:')
 
 # Creo una table con un select di duckdb
 conn.execute("CREATE TABLE substances_echa AS SELECT * FROM read_csv_auto('echastuff.csv')")
+conn.execute("CREATE TABLE substances_echa_local AS SELECT * FROM read_csv_auto('scraped_substances.csv')")
+
+echa_df_local = conn.execute("SELECT * FROM substances_echa_local ORDER BY 1 ASC").df()
+#echa_df_local
 
 st.session_state['sections'] = ['Workers - Hazard via inhalation route',
         'Workers - Hazard via dermal route',
@@ -48,6 +52,7 @@ if source == ':rainbow[ECHA]':
         st.markdown("<div style='width: 1px; height: 29px'></div>", unsafe_allow_html=True)
         with st.popover('⚙️'):
             'Mostra le seguenti sezioni'
+            local_substances = st.checkbox(label='Sostanze salvate in locale', value=False)
             tall_bar = st.checkbox(label='Tabella sostanze', value=False)
             acute_toxicity_toggle = st.checkbox(label='Acute Toxicity',value=False)
             workers_dermal = st.checkbox(label='Workers - Hazard via dermal route',value=True)
@@ -75,27 +80,39 @@ if source == ':rainbow[ECHA]':
     # Faccio un offset perchè la prima riga è inutile e problematica
 
     with col7:
-        df_select = st.selectbox(label='Puoi selezionare la sostanza dalla barra di ricerca o dalla tabella', options=echa_df, placeholder='Isooctane', index=None)
+        df_select = st.selectbox(label='Puoi selezionare la sostanza dalla barra di ricerca o dalla tabella', options=echa_df if not local_substances else echa_df_local['Scraped Substances'], placeholder='Isooctane', index=None)
 
     with st.expander('Tabella sostanze', expanded=True if tall_bar else False):
-        st_select_df = st.dataframe(echa_df, hide_index=True, height=300, use_container_width=True, on_select='rerun', selection_mode='single-row')
+        st_select_df = st.dataframe(echa_df if not local_substances else echa_df_local['Scraped Substances'], hide_index=True, height=300, use_container_width=True, on_select='rerun', selection_mode='single-row')
 
     if df_select or st_select_df.selection.rows:
-            substance = df_select if df_select else echa_df['Substance'].iloc[st_select_df.selection.rows[0]]
+            if not local_substances:
+                substance = df_select if df_select else echa_df['Substance'].iloc[st_select_df.selection.rows[0]]
+            elif local_substances:
+                substance = df_select if df_select else echa_df_local['Scraped Substances'].iloc[st_select_df.selection.rows[0]]
             st.session_state['AcuteToxicity'] = None
             st.subheader(substance)
-            final_url = search_dossier(substance)
-            if final_url:
-                col1,col2 = st.columns(2)
-                with col1:
-                    st.page_link(label=':blue[**Riassunto tossicologico** completo sul sito ECHA]', page=final_url)
-                    #Cerco di recuperare un URL data una sostanza. Se esiste lo passo e inizializzo tutti i metodi che  mi interpretano la pagina ECHA
-            else:
-                st.error('Non ho trovato alcun riassunto tossicologico.')
+            if local_substances:
+                uuid = echa_df_local.loc[echa_df_local['Scraped Substances'] == substance, 'ToxSummFilename'].values[0]
+                local_summary_content = open(f'echa_scraping/{uuid}.html', 'r', encoding="utf8").read()
+                try:
+                    echa_pandas(local_summary_content)
+                except:
+                    st.write('Qualcosa è andato storto con il decoding locale di questa sostanza. Prova a cercarla non da locale.')
+            if not local_substances:
+                final_url = search_dossier(substance)
+                if final_url:
+                    col1,col2 = st.columns(2)
+                    with col1:
+                        st.page_link(label=':blue[**Riassunto tossicologico** completo sul sito ECHA]', page=final_url)
+                        #Cerco di recuperare un URL data una sostanza. Se esiste lo passo e inizializzo tutti i metodi che  mi interpretano la pagina ECHA
+                else:
+                    st.error('Non ho trovato alcun riassunto tossicologico.')
             if st.session_state['AcuteToxicity']!=None:
                 st.page_link(label=':violet[**Acute Toxicity** completo sul sito ECHA]', page=st.session_state['AcuteToxicity'])
                 acute_toxicity_to_pandas()
-                summary_content = rq.get(final_url).text
+                if not local_substances:
+                    summary_content = rq.get(final_url).text
                 echa_pandas(summary_content)
                 # Questo serve per la pagina con il summary dell'Acute Toxicity. Quella è un'altra storia
 
