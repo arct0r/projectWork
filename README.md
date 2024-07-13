@@ -74,6 +74,8 @@ Data una sostanza verifica se esista un dossier sul sito del CIR. Se esiste ne e
 - ✅ **'Betamethasone'** 
 - 🆗 **'Citral'**  Formattazione problematica
 - ✅ **'L-menthan-3-one '**
+- 🆗 **'Ethylene dimethacrylate'** Formattazione problematica
+
 
 
 
