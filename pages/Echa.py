@@ -93,6 +93,7 @@ if source == ':rainbow[ECHA]':
             else:
                 st.error('Non ho trovato alcun riassunto tossicologico.')
             if st.session_state['AcuteToxicity']!=None:
+                st.page_link(label=':violet[**Acute Toxicity** completo sul sito ECHA]', page=st.session_state['AcuteToxicity'])
                 acute_toxicity_to_pandas()
                 summary_content = rq.get(final_url).text
                 echa_pandas(summary_content)
