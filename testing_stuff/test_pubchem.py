@@ -1,6 +1,6 @@
 import duckdb
 
-# Metodo che prova a collegarsi ad un file csv non vuoto e che la struttura sia corretta
+# Metodo che prova a collegarsi ad un file csv non vuoto e controlla che la struttura sia corretta
 def test_PubChem_Index_table():
     conn = duckdb.connect(':memory:')
     assert(conn.execute("CREATE TABLE pubchem_live AS SELECT * FROM read_csv('pubchem.csv', header=1)"))
@@ -10,7 +10,7 @@ def test_PubChem_Index_table():
     
     assert list(result.columns) == ['cid', 'substances']
     assert len(result) != 0
-    # Verifico che il csv appena caricato in memoria abbia queste due colonne: CID e Substances
+    # Verifico che il csv appena caricato in memoria abbia queste due colonne: CID e Substances e che non sia vuoto
     
     conn.close()
 
@@ -18,6 +18,7 @@ def test_PubChem_Index_table():
 
 
 def test_substance_snapshot(snapshot):
+    # Metodo per lo snapshot testing. Carico il csv attraverso duckdb e cerco una sostanza specifica
     substance_name = 'NITROGLYCERIN'
     conn = duckdb.connect(':memory:')
     conn.execute("CREATE TABLE pubchem_live AS SELECT * FROM read_csv('pubchem.csv', header=1)")
