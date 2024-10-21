@@ -1,0 +1,44 @@
+schema
+DB per una piattaforma di corsi online (Udemy)
+- Corsi 
+- Studenti
+- Insegnanti
+- Valutazioni studenti
+- Materiali didattici (video, slides)
+
+Un corso ha al massimo 1 insegnante
+Un insegnante può fare piu' corsi
+Gli studenti ricevono un voto e lasciano una valutazione al corso
+
+
+
+
+
+Recupera i titoli dei corsi a cui lo studente con ID1 è iscritto
+SELECT Iscritti.nome_corso from Iscritti 
+LEFT JOIN Corso on Iscritti.idCorso = Corso.idCorso 
+WHERE Iscritti.idStudente = ID1
+-----------------------------------------------------------------
+
+Conta quanti studenti sono iscritti al corso con ID10
+SELECT COUNT(idStudente) from Iscritti 
+WHERE idCorso = 'ID10'
+-----------------------------------------------------------------
+
+Recupera gli insegnanti che insegnano almeno 2 corsi
+SELECT Corso.idInsegnante, COUNT(Corso.idInsegnante) as countInsegnante, Insegnante.nome_insegnante
+FROM Corso 
+LEFT JOIN Insegnante ON Corso.id_insegnante = Insegnante.id_insegnante
+WHERE countInsegnante >= 2
+GROUP BY Corso.idInsegnante
+
+not sure about this one. Si può fare il where così dopo il group by? 
+-----------------------------------------------------------------
+
+Trova tutti i corsi che non hanno materiali didattici associati
+SELECT Id_corso, COUNT(ID_materiale) as CountMateriale FROM Materiali_didattici 
+WHERE CountMateriale = 0
+GROUP BY ID_Corso
+
+not sure about this one. Si può fare il where così dopo il group by? 
+
