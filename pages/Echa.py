@@ -52,7 +52,7 @@ if source == ':rainbow[ECHA]':
         st.markdown("<div style='width: 1px; height: 29px'></div>", unsafe_allow_html=True)
         with st.popover('⚙️'):
             'Mostra le seguenti sezioni'
-            local_substances = st.checkbox(label='Sostanze salvate in locale', value=False)
+            local_substances = st.checkbox(label='Sostanze salvate in locale', value=True)
             tall_bar = st.checkbox(label='Tabella sostanze', value=False)
             acute_toxicity_toggle = st.checkbox(label='Acute Toxicity',value=False)
             workers_dermal = st.checkbox(label='Workers - Hazard via dermal route',value=True)
