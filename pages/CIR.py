@@ -55,7 +55,7 @@ if source == ":blue[CIR]":
                 dossier_text = get_pdf_content(all_links[i])
                 if dossier_text:
                     break
-            genai.configure(api_key = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
+            genai.configure(st.secrets['api_key'] = "AIzaSyDBaM35Zp4FUO0ZDe01OsBpqsTUColrYyw")
             # Chiave dell'API che non dovrebbe essere visibile pubblicamente. 
             model = genai.GenerativeModel(model_name="gemini-1.5-flash")
             # Carico il bro Gemini
