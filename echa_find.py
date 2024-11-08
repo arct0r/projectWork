@@ -85,9 +85,8 @@ def search_dossier(substance):
                 
         if acute_toxicity_id:
             acute_toxicity_link = 'https://chem.echa.europa.eu/html-pages/'+ assetExternalId + '/documents/' + acute_toxicity_id + '.html'
-            # ora serve il metodo che mi interpreti l'
-            print('Acute toxicity link:')
-            print(acute_toxicity_link)
+            #print('Acute toxicity link:')
+            #print(acute_toxicity_link)
             st.session_state['AcuteToxicity'] = acute_toxicity_link
         if final_url:
             return final_url
