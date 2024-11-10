@@ -19,6 +19,7 @@ Da remoto: [toxicity.streamlit.app](https://toxicity.streamlit.app/)
 ### ECHA
 - ***Se esiste un dossier tossicologico funziona quasi sempre. Ogni tanto potrebbe avere qualche problema di formattazione del testo o della tabella. In fondo al README è presenta una lista delle sostanze testate.***
 - Ora è presente anche una ricerca in locale instantanea
+  
 In qualche modo *complicato* recupera un dossier attivo (o inattivo) dal sito dell'ECHA e, in un modo ancora piu' complicato, ne estrae il riassunto tossicologico e l'acute toxicity.
 **Ottenere le tabelle dai riassunti tossicologici dall'html del dossier si è rivelato un incubo.**
 
